@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MachOpt | Reports</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f7fb;color:#172033}
+.layout{display:flex;min-height:100vh}.sidebar{width:286px;background:#101a2b;color:#fff;padding:28px 18px;position:fixed;top:0;bottom:0;left:0}
+.brand{display:flex;align-items:center;gap:14px;padding:0 14px 28px;border-bottom:1px solid #29354a}.logo{width:48px;height:48px;border-radius:13px;background:linear-gradient(135deg,#18a9ef,#126de2);display:grid;place-items:center;font-size:25px;font-weight:800}.brand h1{font-size:25px;margin:0}.brand p{font-size:12px;color:#9ba8bc;margin:3px 0 0}
+.nav-title{font-size:11px;color:#65738a;letter-spacing:1.5px;margin:34px 14px 12px}.nav a{display:block;text-decoration:none;color:#b9c4d5;padding:13px 14px;border-radius:9px;margin:4px 0;font-size:15px}.nav a:hover,.nav a.active{background:#1b2940;color:#fff}
+.main{margin-left:286px;width:calc(100% - 286px);padding:36px 42px}.top h2{margin:0;font-size:31px}.top p{color:#71809a;margin:8px 0 28px}
+.hero{background:linear-gradient(110deg,#172e83,#0878a9);color:#fff;border-radius:20px;padding:30px 32px;margin-bottom:28px}.hero h3{font-size:25px;margin:0 0 8px}.hero p{color:#dcecff;margin:0;line-height:1.6}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;margin-bottom:22px}.metric{background:#fff;border:1px solid #e2e8f1;border-radius:16px;padding:22px;box-shadow:0 8px 25px rgba(24,40,72,.06)}.metric .label{color:#71809a;font-size:13px}.metric .value{font-size:28px;font-weight:750;margin-top:9px}
+.card{background:#fff;border:1px solid #e2e8f1;border-radius:16px;padding:24px;margin-bottom:20px;box-shadow:0 8px 25px rgba(24,40,72,.06)}.card h3{margin:0 0 8px;font-size:20px}.card p{color:#56647b;line-height:1.65}
+.finding{display:grid;grid-template-columns:100px 1fr;gap:20px;align-items:center;border:1px solid #e5eaf2;border-radius:12px;padding:18px;margin-top:13px}.exp{font-size:25px;font-weight:800;color:#126de2}.finding strong{font-size:16px}.finding span{display:block;color:#68768c;margin-top:5px;line-height:1.5}
+table{width:100%;border-collapse:collapse}th{text-align:left;background:#f1f5fa;color:#53627a;padding:12px}td{padding:11px;border-bottom:1px solid #edf1f6;color:#4e5c73}
+@media(max-width:900px){.sidebar{width:220px}.main{margin-left:220px;width:calc(100% - 220px);padding:25px}.grid{grid-template-columns:1fr}}@media(max-width:650px){.layout{display:block}.sidebar{position:static;width:100%}.main{margin-left:0;width:100%}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<div class="brand"><div class="logo">M</div><div><h1>MachOpt</h1><p>Machining Analytics</p></div></div>
+<div class="nav-title">MAIN</div><nav class="nav">
+<a href="index.html">⌂ &nbsp; Dashboard</a><a href="experiments.html">▣ &nbsp; Experiments</a><a href="workpieces.html">▣ &nbsp; Workpieces</a><a href="cutting-tools.html">⚙ &nbsp; Cutting Tools</a><a href="machines.html">▤ &nbsp; Machines</a><a href="operators.html">♙ &nbsp; Operators</a>
+</nav>
+<div class="nav-title">ANALYTICS</div><nav class="nav">
+<a href="results-analysis.html">◈ &nbsp; Results Analysis</a><a href="energy-analysis.html">ϟ &nbsp; Energy Analysis</a><a href="cost-analysis.html">₹ &nbsp; Cost Analysis</a><a href="optimization.html">✦ &nbsp; Optimization</a><a href="db-schema.html">▦ &nbsp; DB Schema</a><a href="sql-analysis.html">⌘ &nbsp; SQL Analysis</a><a class="active" href="reports.html">▤ &nbsp; Reports</a>
+</nav>
+</aside>
+
+<main class="main">
+<div class="top"><h2>Reports</h2><p>MachOptDB project performance report</p></div>
+<section class="hero"><h3>MachOptDB — Engineering Analysis Report</h3><p>A consolidated view of CNC machining experiments, quality, productivity, energy consumption and machining cost.</p></section>
+
+<div class="grid">
+<div class="metric"><div class="label">Total Experiments</div><div class="value">18</div></div>
+<div class="metric"><div class="label">Average Tool Wear</div><div class="value">0.175 mm</div></div>
+<div class="metric"><div class="label">Average Surface Roughness</div><div class="value">3.14 µm</div></div>
+<div class="metric"><div class="label">Average MRR</div><div class="value">50.11 cm³/min</div></div>
+<div class="metric"><div class="label">Average Energy</div><div class="value">2.96 kWh</div></div>
+<div class="metric"><div class="label">Average Total Cost</div><div class="value">₹216.31</div></div>
+</div>
+
+<section class="card">
+<h3>Key Engineering Findings</h3>
+<div class="finding"><div class="exp">E03</div><div><strong>Best machining quality</strong><span>Lowest tool wear at 0.095 mm and excellent surface finish at 2.10 µm.</span></div></div>
+<div class="finding"><div class="exp">E15</div><div><strong>Best productivity and economy</strong><span>Highest MRR at 80 cm³/min, lowest energy consumption at 1.90 kWh and lowest total cost at ₹109.</span></div></div>
+<div class="finding"><div class="exp">T04</div><div><strong>Best average tool-wear performance</strong><span>Coated Carbide shows the lowest average tool wear among the considered tool materials.</span></div></div>
+</section>
+
+<section class="card">
+<h3>Performance Objectives</h3>
+<table>
+<tr><th>Performance Factor</th><th>Desired Condition</th><th>Project Use</th></tr>
+<tr><td>Tool Wear</td><td>Low</td><td>Tool life and reliability</td></tr>
+<tr><td>Surface Roughness</td><td>Low</td><td>Surface quality</td></tr>
+<tr><td>Material Removal Rate</td><td>High</td><td>Productivity</td></tr>
+<tr><td>Energy Consumption</td><td>Low</td><td>Energy efficiency</td></tr>
+<tr><td>Machining Cost</td><td>Low</td><td>Economic operation</td></tr>
+</table>
+</section>
+
+<section class="card">
+<h3>Report Summary</h3>
+<p>MachOptDB demonstrates how a relational database can organize CNC machining experiments and support data-driven engineering decisions. The system connects workpiece, cutting tool, machine, operator, machining experiment, machining result, energy consumption and machining cost information.</p>
+<p>The analysis shows that no single experiment necessarily optimizes every objective. E03 is particularly strong for machining quality, while E15 provides the strongest productivity, energy and cost combination in the sample dataset.</p>
+</section>
+</main>
+</div>
+</body>
+</html>

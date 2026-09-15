@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MachOpt | Project Overview</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f7fb;color:#172033}
+.layout{display:flex;min-height:100vh}.sidebar{width:286px;background:#101a2b;color:#fff;padding:28px 18px;position:fixed;top:0;bottom:0;left:0}
+.brand{display:flex;align-items:center;gap:14px;padding:0 14px 28px;border-bottom:1px solid #29354a}.logo{width:48px;height:48px;border-radius:13px;background:linear-gradient(135deg,#18a9ef,#126de2);display:grid;place-items:center;font-size:25px;font-weight:800}.brand h1{font-size:25px;margin:0}.brand p{font-size:12px;color:#9ba8bc;margin:3px 0 0}
+.nav-title{font-size:11px;color:#65738a;letter-spacing:1.5px;margin:34px 14px 12px}.nav a{display:block;text-decoration:none;color:#b9c4d5;padding:13px 14px;border-radius:9px;margin:4px 0;font-size:15px}.nav a:hover,.nav a.active{background:#1b2940;color:#fff}
+.main{margin-left:286px;width:calc(100% - 286px);padding:36px 42px}.top h2{margin:0;font-size:31px}.top p{color:#71809a;margin:8px 0 28px}
+.hero{background:linear-gradient(110deg,#172e83,#0878a9);color:#fff;border-radius:20px;padding:30px 32px;margin-bottom:28px}.hero h3{font-size:25px;margin:0 0 8px}.hero p{color:#dcecff;margin:0;line-height:1.6}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.card{background:#fff;border:1px solid #e2e8f1;border-radius:16px;padding:24px;box-shadow:0 8px 25px rgba(24,40,72,.06)}.card h3{margin:0 0 10px;font-size:20px}.card p,.card li{color:#56647b;line-height:1.65}.flow{margin-top:20px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}.step{background:#eef6ff;border:1px solid #d6eaff;color:#126de2;padding:12px 15px;border-radius:10px;font-weight:700}.arrow{color:#8290a7;font-weight:700}
+.full{grid-column:1/-1}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:18px}.stat{background:#f8fafc;border-radius:12px;padding:17px}.stat strong{display:block;font-size:24px;color:#126de2}.stat span{font-size:12px;color:#71809a}
+@media(max-width:900px){.sidebar{width:220px}.main{margin-left:220px;width:calc(100% - 220px);padding:25px}.grid{grid-template-columns:1fr}.full{grid-column:auto}.stats{grid-template-columns:repeat(2,1fr)}}@media(max-width:650px){.layout{display:block}.sidebar{position:static;width:100%}.main{margin-left:0;width:100%}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<div class="brand"><div class="logo">M</div><div><h1>MachOpt</h1><p>Machining Analytics</p></div></div>
+<div class="nav-title">MAIN</div><nav class="nav">
+<a href="index.html">⌂ &nbsp; Dashboard</a><a href="experiments.html">▣ &nbsp; Experiments</a><a href="workpieces.html">▣ &nbsp; Workpieces</a><a href="cutting-tools.html">⚙ &nbsp; Cutting Tools</a><a href="machines.html">▤ &nbsp; Machines</a><a href="operators.html">♙ &nbsp; Operators</a>
+</nav>
+<div class="nav-title">ANALYTICS</div><nav class="nav">
+<a href="results-analysis.html">◈ &nbsp; Results Analysis</a><a href="energy-analysis.html">ϟ &nbsp; Energy Analysis</a><a href="cost-analysis.html">₹ &nbsp; Cost Analysis</a><a href="optimization.html">✦ &nbsp; Optimization</a><a href="db-schema.html">▦ &nbsp; DB Schema</a><a href="sql-analysis.html">⌘ &nbsp; SQL Analysis</a><a href="reports.html">▤ &nbsp; Reports</a><a class="active" href="project-overview.html">● &nbsp; Project Overview</a>
+</nav>
+</aside>
+
+<main class="main">
+<div class="top"><h2>Project Overview</h2><p>MachOptDB — Database-Driven CNC Machining Analysis</p></div>
+<section class="hero"><h3>MachOptDB</h3><p>A relational database system for storing, managing and analyzing CNC machining experiments and supporting data-driven machining decisions.</p></section>
+
+<div class="grid">
+<section class="card">
+<h3>Problem Statement</h3>
+<p>Different combinations of cutting speed, feed rate and depth of cut produce different machining results. A systematic method is required to store experiments, maintain workpiece and tool information, record results, evaluate energy and cost, and identify suitable machining conditions.</p>
+</section>
+<section class="card">
+<h3>Aim</h3>
+<p>To develop a relational database system for storing and analyzing CNC machining experimental data and identifying suitable machining parameter combinations based on tool wear, surface roughness, material removal rate, energy consumption and machining cost.</p>
+</section>
+<section class="card">
+<h3>Objectives</h3>
+<ul>
+<li>Design a relational database for CNC machining data.</li>
+<li>Store workpiece and cutting-tool information.</li>
+<li>Maintain CNC machine and operator information.</li>
+<li>Record machining parameters and experimental results.</li>
+<li>Analyze tool wear and surface roughness.</li>
+<li>Compare material removal rate.</li>
+<li>Analyze energy consumption and machining cost.</li>
+<li>Use SQL queries for data-driven machining analysis.</li>
+</ul>
+</section>
+<section class="card">
+<h3>Database Structure</h3>
+<p>The system contains eight major relational tables that connect experimental parameters with machining results, energy consumption and cost.</p>
+<div class="stats"><div class="stat"><strong>8</strong><span>Major Tables</span></div><div class="stat"><strong>18</strong><span>Experiments</span></div><div class="stat"><strong>4</strong><span>Cutting Tools</span></div><div class="stat"><strong>3</strong><span>Machines</span></div></div>
+</section>
+<section class="card full">
+<h3>Project Flow</h3>
+<div class="flow">
+<div class="step">CNC Parameters</div><div class="arrow">→</div><div class="step">Experimental Data</div><div class="arrow">→</div><div class="step">Relational Database</div><div class="arrow">→</div><div class="step">SQL Analysis</div><div class="arrow">→</div><div class="step">Performance Comparison</div><div class="arrow">→</div><div class="step">Machining Decision</div>
+</div>
+</section>
+<section class="card full">
+<h3>Scope & Future Extension</h3>
+<p>The project focuses on database-based analysis of CNC machining experiments. It can support manufacturing engineers, CNC operators, production engineers, researchers and mechanical engineering laboratories. Future extensions include machine-learning models for tool-wear prediction, real-time sensor integration, predictive tool maintenance and automated parameter recommendation.</p>
+</section>
+</div>
+</main>
+</div>
+</body>
+</html>

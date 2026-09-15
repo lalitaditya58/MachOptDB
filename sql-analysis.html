@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>MachOpt | SQL Analysis</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f7fb;color:#172033}
+.layout{display:flex;min-height:100vh}.sidebar{width:286px;background:#101a2b;color:#fff;padding:28px 18px;position:fixed;top:0;bottom:0;left:0}
+.brand{display:flex;align-items:center;gap:14px;padding:0 14px 28px;border-bottom:1px solid #29354a}.logo{width:48px;height:48px;border-radius:13px;background:linear-gradient(135deg,#18a9ef,#126de2);display:grid;place-items:center;font-size:25px;font-weight:800}.brand h1{font-size:25px;margin:0}.brand p{font-size:12px;color:#9ba8bc;margin:3px 0 0}
+.nav-title{font-size:11px;color:#65738a;letter-spacing:1.5px;margin:34px 14px 12px}.nav a{display:block;text-decoration:none;color:#b9c4d5;padding:13px 14px;border-radius:9px;margin:4px 0;font-size:15px}.nav a:hover,.nav a.active{background:#1b2940;color:#fff}
+.main{margin-left:286px;width:calc(100% - 286px);padding:36px 42px}.top h2{margin:0;font-size:31px}.top p{color:#71809a;margin:8px 0 28px}
+.hero{background:linear-gradient(110deg,#172e83,#0878a9);color:#fff;border-radius:20px;padding:30px 32px;margin-bottom:28px}.hero h3{font-size:25px;margin:0 0 8px}.hero p{color:#dcecff;margin:0;line-height:1.6}
+.card{background:#fff;border:1px solid #e2e8f1;border-radius:16px;padding:24px;margin-bottom:20px;box-shadow:0 8px 25px rgba(24,40,72,.06)}.card h3{margin:0 0 7px;font-size:20px}.desc{color:#71809a;font-size:14px;line-height:1.6;margin:0 0 18px}
+pre{margin:0;background:#101a2b;color:#dbe8ff;border-radius:12px;padding:20px;overflow:auto;font:13px/1.65 Consolas,monospace}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.result{border:1px solid #e3e9f2;border-radius:12px;padding:18px;background:#fbfcfe}.result h4{margin:0 0 8px;color:#126de2}.result p{margin:0;color:#56647b;line-height:1.6}
+.badge{display:inline-block;padding:5px 9px;border-radius:20px;background:#e8f3ff;color:#126de2;font-size:11px;font-weight:700;margin-right:6px}
+@media(max-width:900px){.sidebar{width:220px}.main{margin-left:220px;width:calc(100% - 220px);padding:25px}.grid{grid-template-columns:1fr}}@media(max-width:650px){.layout{display:block}.sidebar{position:static;width:100%}.main{margin-left:0;width:100%}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+<div class="brand"><div class="logo">M</div><div><h1>MachOpt</h1><p>Machining Analytics</p></div></div>
+<div class="nav-title">MAIN</div><nav class="nav">
+<a href="index.html">⌂ &nbsp; Dashboard</a><a href="experiments.html">▣ &nbsp; Experiments</a><a href="workpieces.html">▣ &nbsp; Workpieces</a><a href="cutting-tools.html">⚙ &nbsp; Cutting Tools</a><a href="machines.html">▤ &nbsp; Machines</a><a href="operators.html">♙ &nbsp; Operators</a>
+</nav>
+<div class="nav-title">ANALYTICS</div><nav class="nav">
+<a href="results-analysis.html">◈ &nbsp; Results Analysis</a><a href="energy-analysis.html">ϟ &nbsp; Energy Analysis</a><a href="cost-analysis.html">₹ &nbsp; Cost Analysis</a><a href="optimization.html">✦ &nbsp; Optimization</a><a href="db-schema.html">▦ &nbsp; DB Schema</a><a class="active" href="sql-analysis.html">⌘ &nbsp; SQL Analysis</a>
+</nav>
+</aside>
+
+<main class="main">
+<div class="top"><h2>SQL Analysis</h2><p>Database queries used for CNC machining performance analysis</p></div>
+<section class="hero"><h3>MachOptDB SQL Intelligence</h3><p>SQL JOINs, aggregate functions, GROUP BY, HAVING, filtering and comparative queries transform the stored machining records into engineering insights.</p></section>
+
+<div class="card">
+<h3>1. Multi-Table JOIN Analysis</h3>
+<p class="desc">Combines workpiece, cutting-tool, machining-parameter and result information into one analytical view.</p>
+<pre>SELECT E.Experiment_ID, W.Material_Name, T.Tool_Material,
+       E.Cutting_Speed_m_min, E.Feed_Rate_mm_min,
+       E.Depth_of_Cut_mm, R.Tool_Wear_mm,
+       R.Surface_Roughness_um,
+       R.Material_Removal_Rate_cm3_min
+FROM Machining_Experiment E
+JOIN Workpiece W ON E.Workpiece_ID = W.Workpiece_ID
+JOIN Cutting_Tool T ON E.Tool_ID = T.Tool_ID
+JOIN Machining_Result R ON E.Experiment_ID = R.Experiment_ID;</pre>
+</div>
+
+<div class="card">
+<h3>2. Aggregate Analysis</h3>
+<p class="desc">Aggregate functions summarize machining performance across the stored experiments.</p>
+<pre>SELECT
+    AVG(Tool_Wear_mm) AS Average_Tool_Wear,
+    AVG(Surface_Roughness_um) AS Average_Surface_Roughness,
+    AVG(Material_Removal_Rate_cm3_min) AS Average_MRR
+FROM Machining_Result;</pre>
+</div>
+
+<div class="card">
+<h3>3. GROUP BY + HAVING</h3>
+<p class="desc">Compares average tool wear by cutting-tool material and filters the groups.</p>
+<pre>SELECT T.Tool_Material, AVG(R.Tool_Wear_mm) AS Average_Wear
+FROM Machining_Experiment E
+JOIN Cutting_Tool T ON E.Tool_ID = T.Tool_ID
+JOIN Machining_Result R ON E.Experiment_ID = R.Experiment_ID
+GROUP BY T.Tool_Material
+HAVING AVG(R.Tool_Wear_mm) &lt; 0.20;</pre>
+</div>
+
+<div class="grid">
+<div class="result"><h4><span class="badge">JOIN</span>Relational Integration</h4><p>Links related tables through primary-key and foreign-key relationships for meaningful machining comparisons.</p></div>
+<div class="result"><h4><span class="badge">GROUP BY</span>Tool Comparison</h4><p>Groups experiments by tool material so average performance can be compared.</p></div>
+<div class="result"><h4><span class="badge">HAVING</span>Performance Filter</h4><p>Filters grouped results using aggregate conditions, such as average tool wear below 0.20 mm.</p></div>
+<div class="result"><h4><span class="badge">AGGREGATE</span>Engineering Metrics</h4><p>Calculates averages and other summaries for tool wear, surface roughness, MRR, energy and cost.</p></div>
+</div>
+
+<div class="card">
+<h3>4. Machining Decision Analysis</h3>
+<p class="desc">The database supports comparison of five major objectives.</p>
+<table style="width:100%;border-collapse:collapse">
+<tr style="background:#f1f5fa"><th style="text-align:left;padding:12px">Factor</th><th style="text-align:left;padding:12px">Desired Condition</th></tr>
+<tr><td style="padding:11px;border-bottom:1px solid #edf1f6">Tool Wear</td><td style="padding:11px;border-bottom:1px solid #edf1f6">Low</td></tr>
+<tr><td style="padding:11px;border-bottom:1px solid #edf1f6">Surface Roughness</td><td style="padding:11px;border-bottom:1px solid #edf1f6">Low</td></tr>
+<tr><td style="padding:11px;border-bottom:1px solid #edf1f6">Material Removal Rate</td><td style="padding:11px;border-bottom:1px solid #edf1f6">High</td></tr>
+<tr><td style="padding:11px;border-bottom:1px solid #edf1f6">Energy Consumption</td><td style="padding:11px;border-bottom:1px solid #edf1f6">Low</td></tr>
+<tr><td style="padding:11px">Machining Cost</td><td style="padding:11px">Low</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h3>5. Key SQL Findings</h3>
+<p class="desc">The stored sample dataset demonstrates how SQL results can support machining decisions.</p>
+<ul style="line-height:1.9;color:#526079">
+<li><strong>E03:</strong> very low tool wear and excellent surface finish.</li>
+<li><strong>E15:</strong> highest productivity, lowest energy consumption and lowest machining cost.</li>
+<li><strong>Coated Carbide:</strong> lowest average tool wear among the considered tool materials.</li>
+</ul>
+</div>
+</main></div>
+</body></html>

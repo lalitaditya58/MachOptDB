@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MachOpt | Workpieces</title>
+<style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172033;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 255px;
+            height: 100vh;
+            background: #101827;
+            color: white;
+            padding: 25px 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 12px 30px;
+            border-bottom: 1px solid #273449;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #2563eb, #06b6d4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .logo h1 {
+            font-size: 23px;
+        }
+
+        .logo span {
+            display: block;
+            font-size: 10px;
+            color: #8fa0b8;
+        }
+
+        .menu-title {
+            font-size: 10px;
+            color: #718096;
+            letter-spacing: 1.5px;
+            margin: 27px 12px 10px;
+            text-transform: uppercase;
+        }
+
+        .menu a {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            text-decoration: none;
+            color: #aab7ca;
+            padding: 12px 14px;
+            margin: 4px 0;
+            border-radius: 9px;
+            font-size: 14px;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #1d4ed8;
+            color: white;
+        }
+
+        .menu-icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: 255px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 75px;
+            background: white;
+            border-bottom: 1px solid #e4e9f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+        }
+
+        .page-title h2 {
+            font-size: 21px;
+        }
+
+        .page-title p {
+            font-size: 12px;
+            color: #7b8798;
+            margin-top: 4px;
+        }
+
+        .top-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+
+        .avatar {
+            margin-left: 18px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #dbeafe;
+            color: #1d4ed8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .content {
+            padding: 30px 32px;
+        }
+
+        /* HEADER */
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: 25px;
+        }
+
+        .page-header p {
+            margin-top: 6px;
+            color: #718096;
+            font-size: 13px;
+        }
+
+        .count {
+            background: #eff6ff;
+            color: #1d4ed8;
+            padding: 9px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* MATERIAL CARDS */
+
+        .materials {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .material-card {
+            background: white;
+            border: 1px solid #e5eaf1;
+            border-radius: 15px;
+            padding: 22px;
+            transition: .2s;
+        }
+
+        .material-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 28px rgba(15, 23, 42, .08);
+        }
+
+        .material-top {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+        }
+
+        .material-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            background: #eff6ff;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .material-name {
+            font-size: 15px;
+            font-weight: 650;
+        }
+
+        .material-id {
+            color: #94a3b8;
+            font-size: 11px;
+            margin-top: 3px;
+        }
+
+        .details {
+            border-top: 1px solid #edf1f5;
+            padding-top: 16px;
+        }
+
+        .detail {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 12px;
+        }
+
+        .detail span:first-child {
+            color: #718096;
+        }
+
+        .detail span:last-child {
+            font-weight: 600;
+        }
+
+        /* TABLE */
+
+        .table-panel {
+            margin-top: 22px;
+            background: white;
+            border: 1px solid #e5eaf1;
+            border-radius: 15px;
+            padding: 22px;
+        }
+
+        .table-header {
+            margin-bottom: 18px;
+        }
+
+        .table-header h3 {
+            font-size: 16px;
+        }
+
+        .table-header p {
+            margin-top: 5px;
+            color: #94a3b8;
+            font-size: 11px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 10px;
+            padding: 13px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
+
+        td {
+            padding: 14px 13px;
+            border-bottom: 1px solid #edf1f5;
+            font-size: 12px;
+        }
+
+        tbody tr:hover {
+            background: #f8fbff;
+        }
+
+        .id {
+            color: #1d4ed8;
+            font-weight: 700;
+        }
+
+        .hardness {
+            background: #f1f5f9;
+            padding: 5px 9px;
+            border-radius: 15px;
+            font-weight: 600;
+        }
+
+        @media (max-width: 950px) {
+            .materials {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 650px) {
+            .materials {
+                grid-template-columns: 1fr;
+            }
+        }
+    
+        .workpiece-tools{display:flex;gap:12px;align-items:center;margin-bottom:20px;flex-wrap:wrap;}
+        .search-box{flex:1;min-width:260px;position:relative;}
+        .search-box input{width:100%;padding:13px 16px 13px 42px;border:1px solid #dfe6ef;border-radius:10px;background:#fff;font-size:13px;outline:none;transition:.2s;}
+        .search-box input:focus{border-color:#2563eb;box-shadow:0 0 0 3px rgba(37,99,235,.10);}
+        .search-icon{position:absolute;left:15px;top:12px;color:#718096;}
+        .result-count{font-size:12px;color:#64748b;background:#fff;border:1px solid #e5eaf1;padding:11px 14px;border-radius:10px;}
+        .no-results{display:none;background:#fff;border:1px dashed #cbd5e1;border-radius:12px;padding:28px;text-align:center;color:#64748b;margin-bottom:20px;}
+        .material-card.hidden{display:none;}
+        .table-row-hidden{display:none;}
+
+</style>
+
+<style id="full-marks-enhancement">
+.fm-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:24px 0}.fm-card{background:#fff;border:1px solid #e5eaf1;border-radius:14px;padding:20px;box-shadow:0 8px 24px rgba(15,23,42,.05)}.fm-card h3{margin-bottom:8px}.fm-kpi{font-size:26px;font-weight:800;color:#123d69}.fm-muted{color:#718096;font-size:12px}.fm-pill{display:inline-block;padding:5px 9px;border-radius:999px;background:#eef6ff;color:#1769aa;font-size:11px;font-weight:700}.fm-section{margin-top:24px}.fm-section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:14px}.fm-section-head h2{font-size:20px}.fm-actions{display:flex;gap:10px;flex-wrap:wrap}.fm-btn{border:0;border-radius:9px;padding:10px 14px;background:#1769aa;color:#fff;text-decoration:none;font-weight:700;font-size:12px;cursor:pointer}.fm-btn.secondary{background:#eef3f8;color:#17324d}.fm-table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden}.fm-table th,.fm-table td{padding:11px 12px;border-bottom:1px solid #edf1f5;text-align:left;font-size:12px}.fm-table th{background:#f6f9fc;color:#536274;text-transform:uppercase;letter-spacing:.5px;font-size:10px}.fm-table tr.clickable{cursor:pointer}.fm-table tr.clickable:hover{background:#f5faff}.fm-modal{position:fixed;inset:0;background:rgba(9,20,35,.68);display:none;align-items:center;justify-content:center;padding:24px;z-index:9999}.fm-modal.show{display:flex}.fm-dialog{background:#fff;width:min(920px,96vw);max-height:90vh;overflow:auto;border-radius:18px;box-shadow:0 25px 80px rgba(0,0,0,.3)}.fm-dialog-head{padding:20px 24px;border-bottom:1px solid #e7edf4;display:flex;justify-content:space-between;align-items:center}.fm-dialog-head h2{font-size:20px;color:#123d69}.fm-close{border:0;background:#edf2f7;width:36px;height:36px;border-radius:50%;font-size:20px;cursor:pointer}.fm-dialog-body{padding:24px}.fm-two{display:grid;grid-template-columns:1fr 1.4fr;gap:22px}.fm-info{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.fm-info div{padding:12px;border:1px solid #e7edf4;border-radius:10px;background:#f9fbfd}.fm-info b{display:block;font-size:10px;text-transform:uppercase;color:#718096;margin-bottom:4px}.fm-hero{background:linear-gradient(135deg,#0f1c2c,#194b73);color:#fff;border-radius:16px;padding:24px}.fm-hero h1{font-size:26px;margin-bottom:7px}.fm-list{display:grid;gap:9px}.fm-list div{padding:10px 12px;background:#f7fafc;border-radius:9px}.fm-note{margin-top:14px;padding:14px;border-left:4px solid #1d9bf0;background:#f0f8ff;border-radius:8px;font-size:12px}.fm-query{background:#0d1725;color:#d8e7f7;padding:16px;border-radius:12px;overflow:auto;font:12px/1.55 Consolas,monospace}.fm-code{color:#9bd7ff}.fm-role{font-size:11px;color:#1769aa;font-weight:800}.fm-chartbar{height:10px;background:#e8eef5;border-radius:20px;overflow:hidden}.fm-chartbar span{display:block;height:100%;background:linear-gradient(90deg,#1769aa,#00a6c7);border-radius:20px}.fm-recommend{border:2px solid #1769aa;background:#f5fbff;border-radius:16px;padding:22px}.fm-score{font-size:34px;font-weight:900;color:#1769aa}.fm-print{float:right}.fm-tag{font-size:10px;font-weight:800;padding:4px 7px;border-radius:6px;background:#eef2f7;color:#536274}@media(max-width:1000px){.fm-grid{grid-template-columns:repeat(2,1fr)}.fm-two{grid-template-columns:1fr}}@media(max-width:650px){.fm-grid{grid-template-columns:1fr}.fm-info{grid-template-columns:1fr}.fm-dialog-body{padding:16px}}
+</style>
+
+</head>
+<body>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+<div class="logo">
+<div class="logo-icon">M</div>
+<div>
+<h1>MachOpt</h1>
+<span>Machining Analytics</span>
+</div>
+</div>
+<div class="menu-title">Main</div>
+<nav class="menu">
+<a class="nav-item"  href="index.html">
+<div class="menu-icon">⌂</div>
+<span>Dashboard</span>
+</a>
+<a class="nav-item"  href="experiments.html">
+<div class="menu-icon">◫</div>
+<span>Experiments</span>
+</a>
+<a class="nav-item active"  href="workpieces.html">
+<span class="icon">◈</span>
+    Workpieces
+</a>
+<a class="nav-item"  href="cutting-tools.html">
+<div class="menu-icon">⚙</div>
+<span>Cutting Tools</span>
+</a>
+<a class="nav-item"  href="machines.html">
+<div class="menu-icon">▤</div>
+<span>Machines</span>
+</a>
+<a class="nav-item"  href="operators.html">
+<div class="menu-icon">♙</div>
+<span>Operators</span>
+</a>
+</nav>
+<div class="menu-title">Analytics</div>
+<nav class="menu">
+<a class="nav-item"  href="results-analysis.html">
+<div class="menu-icon">◈</div>
+<span>Results Analysis</span>
+</a>
+<a class="nav-item"  href="energy-analysis.html">
+<span class="icon">ϟ</span>
+    Energy Analysis
+</a>
+<a class="nav-item"  href="cost-analysis.html">
+<span class="icon">₹</span>
+    Cost Analysis
+</a>
+<a class="nav-item"  href="optimization.html">
+<span class="icon">✦</span>
+    Optimization
+</a>
+</nav>
+</aside>
+<!-- MAIN -->
+<main class="main">
+<header class="topbar">
+<div class="page-title">
+<h2>Workpieces</h2>
+<p>Material database</p>
+</div>
+<div class="top-right">
+<div class="status">
+<div class="status-dot"></div>
+                    System Online
+                </div>
+<div class="avatar">M</div>
+</div>
+</header>
+<section class="content">
+<div class="page-header">
+<div>
+<h1>Workpiece Materials</h1>
+<p>
+                        Materials used across the CNC machining experiments.
+                    </p>
+</div>
+<div class="count">
+                    5 Materials
+                </div>
+</div>
+<div class="workpiece-tools">
+<div class="search-box">
+<span class="search-icon">⌕</span>
+<input id="workpieceSearch" type="text" placeholder="Search material, ID, hardness or density..." autocomplete="off">
+</div>
+<div class="result-count" id="resultCount">Showing 5 of 5 materials</div>
+</div>
+<div class="no-results" id="noResults">No workpiece materials match your search.</div>
+<!-- MATERIAL CARDS -->
+<div class="materials">
+<div class="material-card" data-workpiece="W01 Aluminium 6061 95 HB 2.70 g/cm3">
+<div class="material-top">
+<div class="material-icon">Al</div>
+<div>
+<div class="material-name">
+                                Aluminium 6061
+                            </div>
+<div class="material-id">
+                                W01
+                            </div>
+</div>
+</div>
+<div class="details">
+<div class="detail">
+<span>Hardness</span>
+<span class="hardness">95 HB</span>
+</div>
+<div class="detail">
+<span>Density</span>
+<span>2.70 g/cm³</span>
+</div>
+</div>
+</div>
+<div class="material-card" data-workpiece="W02 Mild Steel 180 HB 7.85 g/cm3">
+<div class="material-top">
+<div class="material-icon">MS</div>
+<div>
+<div class="material-name">
+                                Mild Steel
+                            </div>
+<div class="material-id">
+                                W02
+                            </div>
+</div>
+</div>
+<div class="details">
+<div class="detail">
+<span>Hardness</span>
+<span class="hardness">180 HB</span>
+</div>
+<div class="detail">
+<span>Density</span>
+<span>7.85 g/cm³</span>
+</div>
+</div>
+</div>
+<div class="material-card" data-workpiece="W03 Stainless Steel 304 200 HB 8.00 g/cm3">
+<div class="material-top">
+<div class="material-icon">SS</div>
+<div>
+<div class="material-name">
+                                Stainless Steel 304
+                            </div>
+<div class="material-id">
+                                W03
+                            </div>
+</div>
+</div>
+<div class="details">
+<div class="detail">
+<span>Hardness</span>
+<span class="hardness">200 HB</span>
+</div>
+<div class="detail">
+<span>Density</span>
+<span>8.00 g/cm³</span>
+</div>
+</div>
+</div>
+<div class="material-card" data-workpiece="W04 Brass 100 HB 8.50 g/cm3">
+<div class="material-top">
+<div class="material-icon">Br</div>
+<div>
+<div class="material-name">
+                                Brass
+                            </div>
+<div class="material-id">
+                                W04
+                            </div>
+</div>
+</div>
+<div class="details">
+<div class="detail">
+<span>Hardness</span>
+<span class="hardness">100 HB</span>
+</div>
+<div class="detail">
+<span>Density</span>
+<span>8.50 g/cm³</span>
+</div>
+</div>
+</div>
+<div class="material-card" data-workpiece="W05 Cast Iron 220 HB 7.20 g/cm3">
+<div class="material-top">
+<div class="material-icon">CI</div>
+<div>
+<div class="material-name">
+                                Cast Iron
+                            </div>
+<div class="material-id">
+                                W05
+                            </div>
+</div>
+</div>
+<div class="details">
+<div class="detail">
+<span>Hardness</span>
+<span class="hardness">220 HB</span>
+</div>
+<div class="detail">
+<span>Density</span>
+<span>7.20 g/cm³</span>
+</div>
+</div>
+</div>
+</div>
+<!-- MATERIAL TABLE -->
+<div class="table-panel">
+<div class="table-header">
+<h3>Material Specifications</h3>
+<p>
+                        Physical properties recorded in the MachOptDB workpiece table.
+                    </p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Workpiece ID</th>
+<th>Material Name</th>
+<th>Hardness</th>
+<th>Density</th>
+<th>Application</th>
+</tr>
+</thead>
+<tbody>
+<tr data-row-workpiece="W01 Aluminium 6061">
+<td class="id">W01</td>
+<td>Aluminium 6061</td>
+<td>95 HB</td>
+<td>2.70 g/cm³</td>
+<td>Machining Experiments</td>
+</tr>
+<tr data-row-workpiece="W02 Mild Steel">
+<td class="id">W02</td>
+<td>Mild Steel</td>
+<td>180 HB</td>
+<td>7.85 g/cm³</td>
+<td>Machining Experiments</td>
+</tr>
+<tr data-row-workpiece="W03 Stainless Steel 304">
+<td class="id">W03</td>
+<td>Stainless Steel 304</td>
+<td>200 HB</td>
+<td>8.00 g/cm³</td>
+<td>Machining Experiments</td>
+</tr>
+<tr data-row-workpiece="W04 Brass">
+<td class="id">W04</td>
+<td>Brass</td>
+<td>100 HB</td>
+<td>8.50 g/cm³</td>
+<td>Machining Experiments</td>
+</tr>
+<tr data-row-workpiece="W05 Cast Iron">
+<td class="id">W05</td>
+<td>Cast Iron</td>
+<td>220 HB</td>
+<td>7.20 g/cm³</td>
+<td>Machining Experiments</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<div id="fmWpModal" class="fm-modal"><div class="fm-dialog"><div class="fm-dialog-head"><h2 id="fmWpTitle">Workpiece Details</h2><button class="fm-close" onclick="fmCloseWp()">×</button></div><div class="fm-dialog-body" id="fmWpBody"></div></div></div>
+<script>
+const FM_WP={"W01": ("Aluminium 6061", 95, 2.7, ["E01", "E02", "E03", "E04"], "T01, T02, T04", "M01, M02", 0.126, 2.55, 58.25, 2.1, 151.0), "W02": ("Mild Steel", 180, 7.85, ["E05", "E06", "E07", "E08"], "T01, T02, T03, T04", "M01, M02, M03", 0.174, 3.23, 49.5, 2.94, 214.38), "W03": ("Stainless Steel 304", 200, 8.0, ["E09", "E10", "E11", "E12"], "T01, T02, T03, T04", "M01, M02, M03", 0.209, 3.43, 46.5, 3.68, 256.75), "W04": ("Brass", 100, 8.5, ["E13", "E14", "E15"], "T01, T02, T04", "M01, M02", 0.12, 2.53, 62.33, 2.03, 143.67), "W05": ("Cast Iron", 220, 7.2, ["E16", "E17", "E18"], "T01, T02, T03", "M01, M02, M03", 0.253, 4.03, 36.0, 4.13, 324.67)};
+function fmOpenWp(id){const d=FM_WP[id];if(!d)return;document.getElementById('fmWpTitle').textContent=id+' — '+d[0];document.getElementById('fmWpBody').innerHTML=`<div class="fm-hero"><span class="fm-pill">WORKPIECE RECORD</span><h1>${d[0]}</h1><p>Material database profile • ${d[3].length} experiments</p></div><div class="fm-info" style="margin-top:18px"><div><b>Workpiece ID</b>${id}</div><div><b>Hardness</b>${d[1]} HB</div><div><b>Density</b>${d[2]} g/cm³</div><div><b>Experiments</b>${d[3].join(', ')}</div><div><b>Tools Used</b>${d[4]}</div><div><b>Machines Used</b>${d[5]}</div><div><b>Avg Tool Wear</b>${d[6]} mm</div><div><b>Avg Surface Roughness</b>${d[7]} µm</div><div><b>Avg MRR</b>${d[8]} cm³/min</div><div><b>Avg Energy</b>${d[9]} kWh</div><div><b>Avg Cost</b>₹${d[10].toFixed(2)}</div></div><div class="fm-note"><b>Engineering use:</b> Compare material response across cutting tools, machines and parameter combinations.</div>`;document.getElementById('fmWpModal').classList.add('show');document.body.style.overflow='hidden'}function fmCloseWp(){document.getElementById('fmWpModal').classList.remove('show');document.body.style.overflow=''}
+[...document.querySelectorAll('.material-card')].forEach(c=>{const m=c.className.match(/W0[1-5]/);const txt=c.innerText;const id=(txt.match(/W0[1-5]/)||[])[0];if(id){c.style.cursor='pointer';c.title='Click for material details';c.addEventListener('click',()=>fmOpenWp(id))}});[...document.querySelectorAll('tbody tr[data-row-workpiece]')].forEach(r=>{const id=(r.innerText.match(/W0[1-5]/)||[])[0];if(id){r.classList.add('clickable');r.addEventListener('click',()=>fmOpenWp(id))}});document.addEventListener('keydown',e=>{if(e.key==='Escape')fmCloseWp()});document.getElementById('fmWpModal').addEventListener('click',e=>{if(e.target.id==='fmWpModal')fmCloseWp()});
+</script>
+
+</main>
+
+<script>
+const searchInput=document.getElementById('workpieceSearch');
+const cards=[...document.querySelectorAll('.material-card[data-workpiece]')];
+const rows=[...document.querySelectorAll('tbody tr[data-row-workpiece]')];
+const count=document.getElementById('resultCount');
+const empty=document.getElementById('noResults');
+function filterWorkpieces(){
+ const q=searchInput.value.trim().toLowerCase();
+ let visible=0;
+ cards.forEach(card=>{
+   const match=!q || card.dataset.workpiece.toLowerCase().includes(q);
+   card.classList.toggle('hidden',!match);
+   if(match) visible++;
+ });
+ rows.forEach(row=>{
+   const match=!q || row.dataset.rowWorkpiece.toLowerCase().includes(q);
+   row.classList.toggle('table-row-hidden',!match);
+ });
+ count.textContent=`Showing ${visible} of ${cards.length} materials`;
+ empty.style.display=visible?'none':'block';
+}
+searchInput.addEventListener('input',filterWorkpieces);
+</script>
+
+</body>
+</html>

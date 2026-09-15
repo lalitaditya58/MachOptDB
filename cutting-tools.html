@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MachOpt | Cutting Tools</title>
+<style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172033;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 255px;
+            height: 100vh;
+            background: #101827;
+            color: white;
+            padding: 25px 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 12px 30px;
+            border-bottom: 1px solid #273449;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #2563eb, #06b6d4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .logo h1 {
+            font-size: 23px;
+        }
+
+        .logo span {
+            display: block;
+            font-size: 10px;
+            color: #8fa0b8;
+        }
+
+        .menu-title {
+            font-size: 10px;
+            color: #718096;
+            letter-spacing: 1.5px;
+            margin: 27px 12px 10px;
+            text-transform: uppercase;
+        }
+
+        .menu a {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            text-decoration: none;
+            color: #aab7ca;
+            padding: 12px 14px;
+            margin: 4px 0;
+            border-radius: 9px;
+            font-size: 14px;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #1d4ed8;
+            color: white;
+        }
+
+        .menu-icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: 255px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 75px;
+            background: white;
+            border-bottom: 1px solid #e4e9f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+        }
+
+        .page-title h2 {
+            font-size: 21px;
+        }
+
+        .page-title p {
+            font-size: 12px;
+            color: #7b8798;
+            margin-top: 4px;
+        }
+
+        .top-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+
+        .avatar {
+            margin-left: 18px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #dbeafe;
+            color: #1d4ed8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .content {
+            padding: 30px 32px;
+        }
+
+        /* HEADER */
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: 25px;
+        }
+
+        .page-header p {
+            margin-top: 6px;
+            color: #718096;
+            font-size: 13px;
+        }
+
+        .count {
+            background: #eff6ff;
+            color: #1d4ed8;
+            padding: 9px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* TOOL CARDS */
+
+        .tools {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+        }
+
+        .tool-card {
+            background: white;
+            border: 1px solid #e5eaf1;
+            border-radius: 15px;
+            padding: 22px;
+            transition: .2s;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 10px 28px rgba(15, 23, 42, .08);
+        }
+
+        .tool-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 13px;
+            background: #eff6ff;
+            color: #2563eb;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            margin-bottom: 18px;
+        }
+
+        .tool-id {
+            color: #2563eb;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .tool-name {
+            font-size: 17px;
+            font-weight: 650;
+            margin-top: 5px;
+        }
+
+        .tool-description {
+            color: #8a96a8;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        .specs {
+            border-top: 1px solid #edf1f5;
+            margin-top: 18px;
+            padding-top: 16px;
+        }
+
+        .spec {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            font-size: 12px;
+        }
+
+        .spec span:first-child {
+            color: #718096;
+        }
+
+        .spec span:last-child {
+            font-weight: 600;
+        }
+
+        .cost {
+            color: #047857 !important;
+        }
+
+        /* TABLE */
+
+        .table-panel {
+            margin-top: 22px;
+            background: white;
+            border: 1px solid #e5eaf1;
+            border-radius: 15px;
+            padding: 22px;
+        }
+
+        .table-header {
+            margin-bottom: 18px;
+        }
+
+        .table-header h3 {
+            font-size: 16px;
+        }
+
+        .table-header p {
+            margin-top: 5px;
+            color: #94a3b8;
+            font-size: 11px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 10px;
+            padding: 13px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
+
+        td {
+            padding: 14px 13px;
+            border-bottom: 1px solid #edf1f5;
+            font-size: 12px;
+        }
+
+        tbody tr:hover {
+            background: #f8fbff;
+        }
+
+        .id {
+            color: #1d4ed8;
+            font-weight: 700;
+        }
+
+        .price {
+            font-weight: 700;
+        }
+
+
+        .tool-card { cursor: pointer; position: relative; overflow: hidden; }
+        .tool-card::after { content: "VIEW DETAILS →"; position: absolute; right: 18px; bottom: 18px; font-size: 10px; font-weight: 700; color: #2563eb; opacity: 0; transform: translateY(4px); transition: .2s; }
+        .tool-card:hover::after { opacity: 1; transform: translateY(0); }
+        .tool-image { width: 100%; height: 145px; object-fit: cover; border-radius: 12px; background: #f8fafc; border: 1px solid #edf1f5; margin-bottom: 16px; }
+        .click-hint { font-size: 10px; color: #64748b; margin-top: 14px; }
+        .modal-backdrop { display:none; position:fixed; inset:0; background:rgba(15,23,42,.62); backdrop-filter:blur(4px); z-index:1000; align-items:center; justify-content:center; padding:24px; }
+        .modal-backdrop.show { display:flex; }
+        .tool-modal { width:min(980px, 96vw); max-height:92vh; overflow:auto; background:#fff; border-radius:18px; box-shadow:0 30px 80px rgba(0,0,0,.28); position:relative; }
+        .modal-head { padding:22px 26px; border-bottom:1px solid #e7edf4; display:flex; justify-content:space-between; align-items:center; }
+        .modal-head h2 { font-size:22px; color:#123b73; }
+        .modal-close { border:0; background:#f1f5f9; width:38px; height:38px; border-radius:50%; font-size:24px; color:#475569; cursor:pointer; }
+        .modal-body { display:grid; grid-template-columns:42% 58%; gap:24px; padding:24px; }
+        .detail-photo { width:100%; height:390px; object-fit:cover; border-radius:14px; border:1px solid #e5eaf1; background:#f8fafc; }
+        .detail-section { border:1px solid #e5eaf1; border-radius:13px; overflow:hidden; margin-bottom:15px; }
+        .detail-section h3 { margin:0; padding:11px 15px; background:#eff6ff; color:#123b73; font-size:14px; }
+        .detail-grid { display:grid; grid-template-columns:1fr 1fr; }
+        .detail-item { padding:11px 15px; border-top:1px solid #edf1f5; font-size:12px; }
+        .detail-item span { display:block; color:#718096; margin-bottom:4px; }
+        .detail-item strong { color:#172033; }
+        .modal-foot { padding:0 24px 24px; }
+        .modal-note { background:#f8fafc; border:1px solid #e5eaf1; border-radius:12px; padding:13px 15px; font-size:11px; color:#64748b; }
+        .table-click { cursor:pointer; }
+        .table-click:hover td { color:#1d4ed8; }
+        @media (max-width: 760px) { .modal-body { grid-template-columns:1fr; } .detail-photo { height:280px; } .detail-grid { grid-template-columns:1fr; } }
+
+        @media (max-width: 1100px) {
+            .tools {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 650px) {
+            .tools {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+<style id="full-marks-enhancement">
+.fm-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:24px 0}.fm-card{background:#fff;border:1px solid #e5eaf1;border-radius:14px;padding:20px;box-shadow:0 8px 24px rgba(15,23,42,.05)}.fm-card h3{margin-bottom:8px}.fm-kpi{font-size:26px;font-weight:800;color:#123d69}.fm-muted{color:#718096;font-size:12px}.fm-pill{display:inline-block;padding:5px 9px;border-radius:999px;background:#eef6ff;color:#1769aa;font-size:11px;font-weight:700}.fm-section{margin-top:24px}.fm-section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:14px}.fm-section-head h2{font-size:20px}.fm-actions{display:flex;gap:10px;flex-wrap:wrap}.fm-btn{border:0;border-radius:9px;padding:10px 14px;background:#1769aa;color:#fff;text-decoration:none;font-weight:700;font-size:12px;cursor:pointer}.fm-btn.secondary{background:#eef3f8;color:#17324d}.fm-table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden}.fm-table th,.fm-table td{padding:11px 12px;border-bottom:1px solid #edf1f5;text-align:left;font-size:12px}.fm-table th{background:#f6f9fc;color:#536274;text-transform:uppercase;letter-spacing:.5px;font-size:10px}.fm-table tr.clickable{cursor:pointer}.fm-table tr.clickable:hover{background:#f5faff}.fm-modal{position:fixed;inset:0;background:rgba(9,20,35,.68);display:none;align-items:center;justify-content:center;padding:24px;z-index:9999}.fm-modal.show{display:flex}.fm-dialog{background:#fff;width:min(920px,96vw);max-height:90vh;overflow:auto;border-radius:18px;box-shadow:0 25px 80px rgba(0,0,0,.3)}.fm-dialog-head{padding:20px 24px;border-bottom:1px solid #e7edf4;display:flex;justify-content:space-between;align-items:center}.fm-dialog-head h2{font-size:20px;color:#123d69}.fm-close{border:0;background:#edf2f7;width:36px;height:36px;border-radius:50%;font-size:20px;cursor:pointer}.fm-dialog-body{padding:24px}.fm-two{display:grid;grid-template-columns:1fr 1.4fr;gap:22px}.fm-info{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.fm-info div{padding:12px;border:1px solid #e7edf4;border-radius:10px;background:#f9fbfd}.fm-info b{display:block;font-size:10px;text-transform:uppercase;color:#718096;margin-bottom:4px}.fm-hero{background:linear-gradient(135deg,#0f1c2c,#194b73);color:#fff;border-radius:16px;padding:24px}.fm-hero h1{font-size:26px;margin-bottom:7px}.fm-list{display:grid;gap:9px}.fm-list div{padding:10px 12px;background:#f7fafc;border-radius:9px}.fm-note{margin-top:14px;padding:14px;border-left:4px solid #1d9bf0;background:#f0f8ff;border-radius:8px;font-size:12px}.fm-query{background:#0d1725;color:#d8e7f7;padding:16px;border-radius:12px;overflow:auto;font:12px/1.55 Consolas,monospace}.fm-code{color:#9bd7ff}.fm-role{font-size:11px;color:#1769aa;font-weight:800}.fm-chartbar{height:10px;background:#e8eef5;border-radius:20px;overflow:hidden}.fm-chartbar span{display:block;height:100%;background:linear-gradient(90deg,#1769aa,#00a6c7);border-radius:20px}.fm-recommend{border:2px solid #1769aa;background:#f5fbff;border-radius:16px;padding:22px}.fm-score{font-size:34px;font-weight:900;color:#1769aa}.fm-print{float:right}.fm-tag{font-size:10px;font-weight:800;padding:4px 7px;border-radius:6px;background:#eef2f7;color:#536274}@media(max-width:1000px){.fm-grid{grid-template-columns:repeat(2,1fr)}.fm-two{grid-template-columns:1fr}}@media(max-width:650px){.fm-grid{grid-template-columns:1fr}.fm-info{grid-template-columns:1fr}.fm-dialog-body{padding:16px}}
+</style>
+
+</head>
+<body>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+<div class="logo">
+<div class="logo-icon">M</div>
+<div>
+<h1>MachOpt</h1>
+<span>Machining Analytics</span>
+</div>
+</div>
+<div class="menu-title">Main</div>
+<nav class="menu">
+<a class="nav-item"  href="index.html">
+<span class="icon">⌂</span>
+    Dashboard
+</a>
+<a class="nav-item"  href="experiments.html">
+<div class="menu-icon">◫</div>
+<span>Experiments</span>
+</a>
+<a class="nav-item"  href="workpieces.html">
+<div class="menu-icon">▣</div>
+<span>Workpieces</span>
+</a>
+<a class="nav-item active"  href="cutting-tools.html">
+<span class="icon">⚙</span>
+    Cutting Tools
+</a>
+<a class="nav-item"  href="machines.html">
+<div class="menu-icon">▤</div>
+<span>Machines</span>
+</a>
+<a class="nav-item"  href="operators.html">
+<div class="menu-icon">♙</div>
+<span>Operators</span>
+</a>
+</nav>
+<div class="menu-title">Analytics</div>
+<nav class="menu">
+<a class="nav-item"  href="results-analysis.html">
+<div class="menu-icon">◈</div>
+<span>Results Analysis</span>
+</a>
+<a class="nav-item"  href="energy-analysis.html">
+<span class="icon">ϟ</span>
+    Energy Analysis
+</a>
+<a class="nav-item"  href="cost-analysis.html">
+<span class="icon">₹</span>
+    Cost Analysis
+</a>
+<a class="nav-item"  href="optimization.html">
+<span class="icon">✦</span>
+    Optimization
+</a>
+</nav>
+</aside>
+<!-- MAIN -->
+<main class="main">
+<header class="topbar">
+<div class="page-title">
+<h2>Cutting Tools</h2>
+<p>Tool specification database</p>
+</div>
+<div class="top-right">
+<div class="status">
+<div class="status-dot"></div>
+                    System Online
+                </div>
+<div class="avatar">M</div>
+</div>
+</header>
+<section class="content">
+<div class="page-header">
+<div>
+<h1>Cutting Tools</h1>
+<p>
+                        Tool materials, diameter and cost used in machining experiments.
+                    </p>
+</div>
+<div class="count">
+                    4 Tools
+                </div>
+</div>
+<!-- TOOL CARDS -->
+<div class="tools">
+<div class="tool-card" onclick="openTool('T01')">
+<img class="tool-image" src="assets/tools/t01-hss.svg" alt="HSS cutting tool">
+<div class="tool-id">T01</div><div class="tool-name">HSS</div><div class="tool-description">High Speed Steel</div>
+<div class="specs"><div class="spec"><span>Diameter</span><span>10.00 mm</span></div><div class="spec"><span>Tool Cost</span><span class="cost">₹450</span></div></div><div class="click-hint">Click to view tool image & full details</div>
+</div>
+<div class="tool-card" onclick="openTool('T02')">
+<img class="tool-image" src="assets/tools/t02-carbide.svg" alt="Carbide cutting tool">
+<div class="tool-id">T02</div><div class="tool-name">Carbide</div><div class="tool-description">Carbide Cutting Tool</div>
+<div class="specs"><div class="spec"><span>Diameter</span><span>10.00 mm</span></div><div class="spec"><span>Tool Cost</span><span class="cost">₹900</span></div></div><div class="click-hint">Click to view tool image & full details</div>
+</div>
+<div class="tool-card" onclick="openTool('T03')">
+<img class="tool-image" src="assets/tools/t03-ceramic.svg" alt="Ceramic cutting tool">
+<div class="tool-id">T03</div><div class="tool-name">Ceramic</div><div class="tool-description">Ceramic Cutting Tool</div>
+<div class="specs"><div class="spec"><span>Diameter</span><span>10.00 mm</span></div><div class="spec"><span>Tool Cost</span><span class="cost">₹1,400</span></div></div><div class="click-hint">Click to view tool image & full details</div>
+</div>
+<div class="tool-card" onclick="openTool('T04')">
+<img class="tool-image" src="assets/tools/t04-coated-carbide.svg" alt="Coated carbide cutting tool">
+<div class="tool-id">T04</div><div class="tool-name">Coated Carbide</div><div class="tool-description">Coated Carbide Tool</div>
+<div class="specs"><div class="spec"><span>Diameter</span><span>10.00 mm</span></div><div class="spec"><span>Tool Cost</span><span class="cost">₹1,200</span></div></div><div class="click-hint">Click to view tool image & full details</div>
+</div>
+</div>
+<!-- TABLE -->
+<div class="table-panel">
+<div class="table-header">
+<h3>Tool Specifications</h3>
+<p>
+                        Cutting-tool information maintained in MachOptDB.
+                    </p>
+</div>
+<table>
+<thead>
+<tr>
+<th>Tool ID</th>
+<th>Tool Material</th>
+<th>Diameter</th>
+<th>Tool Cost</th>
+<th>Usage</th>
+</tr>
+</thead>
+<tbody>
+<tr class="table-click" onclick="openTool('T01')">
+<td class="id">T01</td>
+<td>HSS</td>
+<td>10.00 mm</td>
+<td class="price">₹450</td>
+<td>Machining Experiments</td>
+</tr>
+<tr class="table-click" onclick="openTool('T02')">
+<td class="id">T02</td>
+<td>Carbide</td>
+<td>10.00 mm</td>
+<td class="price">₹900</td>
+<td>Machining Experiments</td>
+</tr>
+<tr class="table-click" onclick="openTool('T03')">
+<td class="id">T03</td>
+<td>Ceramic</td>
+<td>10.00 mm</td>
+<td class="price">₹1,400</td>
+<td>Machining Experiments</td>
+</tr>
+<tr class="table-click" onclick="openTool('T04')">
+<td class="id">T04</td>
+<td>Coated Carbide</td>
+<td>10.00 mm</td>
+<td class="price">₹1,200</td>
+<td>Machining Experiments</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+
+<!-- TOOL DETAIL MODAL -->
+<div class="modal-backdrop" id="toolModal" onclick="closeTool(event)">
+  <div class="tool-modal" onclick="event.stopPropagation()">
+    <div class="modal-head"><h2 id="modalTitle">Tool Details</h2><button class="modal-close" onclick="closeTool()">×</button></div>
+    <div class="modal-body">
+      <div><img id="modalImage" class="detail-photo" src="" alt="Tool image"></div>
+      <div>
+        <div class="detail-section"><h3>Basic Information</h3><div class="detail-grid" id="basicDetails"></div></div>
+        <div class="detail-section"><h3>Database & Usage Details</h3><div class="detail-grid" id="usageDetails"></div></div>
+        <div class="detail-section"><h3>Experiments Using This Tool</h3><div class="detail-grid" id="experimentDetails"></div></div>
+      </div>
+    </div>
+    <div class="modal-foot"><div class="modal-note">All specifications shown here are based on the MachOptDB cutting-tool dataset. The image is a visual representation for the website interface.</div></div>
+  </div>
+</div>
+<script>
+const toolsData = {
+ T01:{name:'HSS',material:'HSS',diameter:'10.00 mm',cost:'₹450',image:'assets/tools/t01-hss.svg',usage:'Machining Experiments',experiments:['E01','E05','E09','E13','E16']},
+ T02:{name:'Carbide',material:'Carbide',diameter:'10.00 mm',cost:'₹900',image:'assets/tools/t02-carbide.svg',usage:'Machining Experiments',experiments:['E02','E03','E06','E10','E14','E17']},
+ T03:{name:'Ceramic',material:'Ceramic',diameter:'10.00 mm',cost:'₹1,400',image:'assets/tools/t03-ceramic.svg',usage:'Machining Experiments',experiments:['E08','E11','E18']},
+ T04:{name:'Coated Carbide',material:'Coated Carbide',diameter:'10.00 mm',cost:'₹1,200',image:'assets/tools/t04-coated-carbide.svg',usage:'Machining Experiments',experiments:['E04','E07','E12','E15']}
+};
+function detail(label,value){return `<div class="detail-item"><span>${label}</span><strong>${value}</strong></div>`}
+function openTool(id){const t=toolsData[id]; document.getElementById('modalTitle').textContent=id+' — '+t.name; document.getElementById('modalImage').src=t.image; document.getElementById('modalImage').alt=t.name+' cutting tool'; document.getElementById('basicDetails').innerHTML=detail('Tool ID',id)+detail('Tool Material',t.material)+detail('Tool Diameter',t.diameter)+detail('Tool Cost',t.cost); document.getElementById('usageDetails').innerHTML=detail('Database Role',t.usage)+detail('Experiments Count',t.experiments.length)+detail('Diameter Standard',t.diameter)+detail('Record Type','Cutting_Tool'); document.getElementById('experimentDetails').innerHTML=t.experiments.map((e,i)=>detail('Experiment '+(i+1),e)).join(''); document.getElementById('toolModal').classList.add('show'); document.body.style.overflow='hidden';}
+function closeTool(e){if(e && e.target!==document.getElementById('toolModal')) return; document.getElementById('toolModal').classList.remove('show'); document.body.style.overflow='';}
+document.addEventListener('keydown',e=>{if(e.key==='Escape') closeTool({target:document.getElementById('toolModal')});});
+</script>
+</main>
+</body>
+</html>

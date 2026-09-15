@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MachOpt | DB Schema</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#f4f7fb;color:#172033}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:286px;background:#101a2b;color:#fff;padding:28px 18px;position:fixed;top:0;bottom:0;left:0}
+.brand{display:flex;align-items:center;gap:14px;padding:0 14px 28px;border-bottom:1px solid #29354a}
+.logo{width:48px;height:48px;border-radius:13px;background:linear-gradient(135deg,#18a9ef,#126de2);display:grid;place-items:center;font-size:25px;font-weight:800}
+.brand h1{font-size:25px;margin:0}.brand p{font-size:12px;color:#9ba8bc;margin:3px 0 0}
+.nav-title{font-size:11px;color:#65738a;letter-spacing:1.5px;margin:34px 14px 12px}
+.nav a{display:block;text-decoration:none;color:#b9c4d5;padding:13px 14px;border-radius:9px;margin:4px 0;font-size:15px}
+.nav a:hover,.nav a.active{background:#1b2940;color:#fff}
+.main{margin-left:286px;width:calc(100% - 286px);padding:36px 42px}
+.top h2{margin:0;font-size:31px}.top p{color:#71809a;margin:8px 0 28px}
+.hero{background:linear-gradient(110deg,#172e83,#0878a9);color:white;border-radius:20px;padding:28px 32px;margin-bottom:28px}
+.hero h3{font-size:25px;margin:0 0 8px}.hero p{color:#dcecff;margin:0;line-height:1.6}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.card{background:#fff;border:1px solid #e2e8f1;border-radius:16px;padding:22px;box-shadow:0 8px 25px rgba(24,40,72,.06)}
+.card h3{margin:0 0 5px;font-size:19px}.desc{color:#71809a;font-size:13px;margin:0 0 18px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;background:#f1f5fa;color:#53627a;padding:11px}
+td{padding:10px;border-bottom:1px solid #edf1f6}
+.pk{font-weight:700;color:#126de2}.fk{font-weight:700;color:#7b4de0}
+.badge{display:inline-block;padding:4px 8px;border-radius:20px;font-size:11px;font-weight:700}
+.pkbadge{background:#e7f2ff;color:#126de2}.fkbadge{background:#f1eaff;color:#7040bd}
+.relationships{margin-top:22px}
+.relationships ul{margin:0;padding-left:20px;color:#526079;line-height:2}
+.note{margin-top:24px;padding:18px 20px;background:#eef7ff;border-left:4px solid #1689e8;border-radius:8px;color:#42516a;line-height:1.6}
+@media(max-width:900px){.sidebar{width:220px}.main{margin-left:220px;width:calc(100% - 220px);padding:25px}.grid{grid-template-columns:1fr}}
+@media(max-width:650px){.sidebar{position:static;width:100%;height:auto}.layout{display:block}.main{margin-left:0;width:100%}}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="sidebar">
+  <div class="brand"><div class="logo">M</div><div><h1>MachOpt</h1><p>Machining Analytics</p></div></div>
+  <div class="nav-title">MAIN</div>
+  <nav class="nav">
+    <a href="index.html">⌂ &nbsp; Dashboard</a>
+    <a href="experiments.html">▣ &nbsp; Experiments</a>
+    <a href="workpieces.html">▣ &nbsp; Workpieces</a>
+    <a href="cutting-tools.html">⚙ &nbsp; Cutting Tools</a>
+    <a href="machines.html">▤ &nbsp; Machines</a>
+    <a href="operators.html">♙ &nbsp; Operators</a>
+  </nav>
+  <div class="nav-title">ANALYTICS</div>
+  <nav class="nav">
+    <a href="results-analysis.html">◈ &nbsp; Results Analysis</a>
+    <a href="energy-analysis.html">ϟ &nbsp; Energy Analysis</a>
+    <a href="cost-analysis.html">₹ &nbsp; Cost Analysis</a>
+    <a href="optimization.html">✦ &nbsp; Optimization</a>
+    <a class="active" href="db-schema.html">▦ &nbsp; DB Schema</a>
+  </nav>
+</aside>
+
+<main class="main">
+  <div class="top">
+    <h2>Database Schema</h2>
+    <p>MachOptDB relational database structure</p>
+  </div>
+
+  <section class="hero">
+    <h3>MachOptDB — Relational Database Design</h3>
+    <p>Eight connected tables store workpiece, tool, machine, operator, experiment, result, energy and cost information for CNC machining analysis.</p>
+  </section>
+
+  <section class="grid">
+    <div class="card">
+      <h3>Workpiece</h3><p class="desc">Stores machining material properties.</p>
+      <table><tr><th>Column</th><th>Key / Type</th></tr>
+      <tr><td class="pk">Workpiece_ID</td><td><span class="badge pkbadge">PK</span> VARCHAR</td></tr>
+      <tr><td>Material_Name</td><td>VARCHAR</td></tr>
+      <tr><td>Hardness_HB</td><td>DECIMAL</td></tr>
+      <tr><td>Density_g_cm3</td><td>DECIMAL</td></tr></table>
+    </div>
+
+    <div class="card">
+      <h3>Cutting_Tool</h3><p class="desc">Stores cutting-tool specifications and cost.</p>
+      <table><tr><th>Column</th><th>Key / Type</th></tr>
+      <tr><td class="pk">Tool_ID</td><td><span class="badge pkbadge">PK</span> VARCHAR</td></tr>
+      <tr><td>Tool_Material</td><td>VARCHAR</td></tr>
+      <tr><td>Tool_Diameter_mm</td><td>DECIMAL</td></tr>
+      <tr><td>Tool_Cost</td><td>DECIMAL</td></tr></table>
+    </div>
+
+    <div class="card">
+      <h3>Machine</h3><p class="desc">Stores CNC machine capability information.</p>
+      <table><tr><th>Column</th><th>Key / Type</th></tr>
+      <tr><td class="pk">Machine_ID</td><td><span class="badge pkbadge">PK</span> VARCHAR</td></tr>
+      <tr><td>Machine_Name</td><td>VARCHAR</td></tr>
+      <tr><td>Maximum_RPM</td><td>INT</td></tr>
+      <tr><td>Power_kW</td><td>DECIMAL</td></tr></table>
+    </div>
+
+    <div class="card">
+      <h3>Operator</h3><p class="desc">Stores operator information used in experiments.</p>
+      <table><tr><th>Column</th><th>Key / Type</th></tr>
+      <tr><td class="pk">Operator_ID</td><td><span class="badge pkbadge">PK</span> VARCHAR</td></tr>
+      <tr><td>Operator_Name</td><td>VARCHAR</td></tr>
+      <tr><td>Experience_Years</td><td>DECIMAL</td></tr></table>
+    </div>
+
+    <div class="card">
+      <h3>Machining_Experiment</h3><p class="desc">Central table containing machining parameters and references.</p>
+      <table><tr><th>Column</th><th>Key / Type</th></tr>
+      <tr><td class="pk">Experiment_ID</td><td><span class="badge pkbadge">PK</span> VARCHAR</td></tr>
+      <tr><td class="fk">Workpiece_ID</td><td><span class="badge fkbadge">FK</span> VARCHAR</td></tr>
+      <tr><td class="fk">Tool_ID</td><td><span class="badge fkbadge">FK</span> VARCHAR</td></tr>
+      <tr><td class="fk">Machine_ID</td><td><span class="badge fkbadge">FK</span> VARCHAR</td></tr>
+      <tr><td class="fk">Operator_ID</td><td><span class="badge fkbadge">FK</span> VARCHAR</td></tr>
+      <tr><td>Cutting_Speed_m_min</td><td>DECIMAL</td></tr>
+      <tr><td>Feed_Rate_mm_min</td><td>DECIMAL</td></tr>
+      <tr><td>Depth_of_Cut_mm</td><td>DECIMAL</td></tr>
+      <tr><td>Machining_Time_min</td><td>DECIMAL</td></tr></table>
+    </div>
+
+    <div class="card">
+      <h3>Machining_Result</h3><p class="desc">Stores measured machining-performance results.</p>
+      <table><tr><th>Column</th><th>Key / Type</th></tr>
+      <tr><td class="pk">Result_ID</td><td><span class="badge pkbadge">PK</span> VARCHAR</td></tr>
+      <tr><td class="fk">Experiment_ID</td><td><span class="badge fkbadge">FK</span> VARCHAR</td></tr>
+      <tr><td>Tool_Wear_mm</td><td>DECIMAL</td></tr>
+      <tr><td>Surface_Roughness_um</td><td>DECIMAL</td></tr>
+      <tr><td>Material_Removal_Rate_cm3_min</td><td>DECIMAL</td></tr></table>
+    </div>
+
+    <div class="card">
+      <h3>Energy_Consumption</h3><p class="desc">Stores energy used by each experiment.</p>
+      <table><tr><th>Column</th><th>Key / Type</th></tr>
+      <tr><td class="pk">Energy_ID</td><td><span class="badge pkbadge">PK</span> VARCHAR</td></tr>
+      <tr><td class="fk">Experiment_ID</td><td><span class="badge fkbadge">FK</span> VARCHAR</td></tr>
+      <tr><td>Energy_kWh / Energy_Consumed_kWh</td><td>DECIMAL</td></tr></table>
+    </div>
+
+    <div class="card">
+      <h3>Machining_Cost</h3><p class="desc">Stores labor, energy and total machining cost.</p>
+      <table><tr><th>Column</th><th>Key / Type</th></tr>
+      <tr><td class="pk">Cost_ID</td><td><span class="badge pkbadge">PK</span> VARCHAR</td></tr>
+      <tr><td class="fk">Experiment_ID</td><td><span class="badge fkbadge">FK</span> VARCHAR</td></tr>
+      <tr><td>Labor_Cost</td><td>DECIMAL</td></tr>
+      <tr><td>Energy_Cost</td><td>DECIMAL</td></tr>
+      <tr><td>Total_Cost</td><td>DECIMAL</td></tr></table>
+    </div>
+  </section>
+
+  <div class="relationships card">
+    <h3>Table Relationships</h3>
+    <p class="desc">Primary and foreign-key relationships used by MachOptDB.</p>
+    <ul>
+      <li>Workpiece <strong>1 → many</strong> Machining_Experiment</li>
+      <li>Cutting_Tool <strong>1 → many</strong> Machining_Experiment</li>
+      <li>Machine <strong>1 → many</strong> Machining_Experiment</li>
+      <li>Operator <strong>1 → many</strong> Machining_Experiment</li>
+      <li>Machining_Experiment <strong>1 → 1</strong> Machining_Result</li>
+      <li>Machining_Experiment <strong>1 → 1</strong> Energy_Consumption</li>
+      <li>Machining_Experiment <strong>1 → 1</strong> Machining_Cost</li>
+    </ul>
+  </div>
+
+  <div class="note">
+    <strong>DBMS design:</strong> MachOptDB uses a centralized relational structure so machining experiments can be joined with material, tool, machine, operator, result, energy and cost information for SQL-based analysis.
+  </div>
+</main>
+</div>
+</body>
+</html>

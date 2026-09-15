@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MachOpt | Experiments</title>
+<style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172033;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar {
+            position: fixed;
+            width: 255px;
+            height: 100vh;
+            background: #101827;
+            color: white;
+            padding: 25px 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 12px 30px;
+            border-bottom: 1px solid #273449;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #2563eb, #06b6d4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .logo h1 {
+            font-size: 23px;
+        }
+
+        .logo span {
+            display: block;
+            font-size: 10px;
+            color: #8fa0b8;
+        }
+
+        .menu-title {
+            font-size: 10px;
+            color: #718096;
+            letter-spacing: 1.5px;
+            margin: 27px 12px 10px;
+        }
+
+        .menu a {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            text-decoration: none;
+            color: #aab7ca;
+            padding: 12px 14px;
+            margin: 4px 0;
+            border-radius: 9px;
+            font-size: 14px;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #1d4ed8;
+            color: white;
+        }
+
+        .menu-icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* MAIN */
+
+        .main {
+            margin-left: 255px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 75px;
+            background: white;
+            border-bottom: 1px solid #e4e9f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 32px;
+        }
+
+        .page-title h2 {
+            font-size: 21px;
+        }
+
+        .page-title p {
+            font-size: 12px;
+            color: #7b8798;
+            margin-top: 4px;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+
+        .avatar {
+            margin-left: 18px;
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #dbeafe;
+            color: #1d4ed8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .top-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .content {
+            padding: 30px 32px;
+        }
+
+        /* PAGE HEADER */
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+        }
+
+        .page-header h1 {
+            font-size: 25px;
+        }
+
+        .page-header p {
+            margin-top: 6px;
+            color: #718096;
+            font-size: 13px;
+        }
+
+        .experiment-count {
+            background: #eff6ff;
+            color: #1d4ed8;
+            padding: 9px 14px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* SUMMARY CARDS */
+
+        .summary {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 22px;
+        }
+
+        .summary-card {
+            background: white;
+            border: 1px solid #e7ecf3;
+            border-radius: 13px;
+            padding: 20px;
+        }
+
+        .summary-card p {
+            color: #718096;
+            font-size: 12px;
+        }
+
+        .summary-card h2 {
+            font-size: 25px;
+            margin-top: 9px;
+        }
+
+        /* TABLE PANEL */
+
+        .table-panel {
+            background: white;
+            border: 1px solid #e7ecf3;
+            border-radius: 14px;
+            padding: 22px;
+        }
+
+        .table-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+        }
+
+        .table-top h3 {
+            font-size: 16px;
+        }
+
+        .search {
+            width: 230px;
+            padding: 10px 13px;
+            border: 1px solid #dce3ec;
+            border-radius: 8px;
+            outline: none;
+            font-size: 12px;
+        }
+
+        .search:focus {
+            border-color: #2563eb;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+
+        th {
+            text-align: left;
+            padding: 13px 11px;
+            background: #f8fafc;
+            color: #64748b;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+        }
+
+        td {
+            padding: 14px 11px;
+            border-bottom: 1px solid #edf1f5;
+            font-size: 12px;
+        }
+
+        tbody tr:hover {
+            background: #f8fbff;
+        }
+
+        .experiment-id {
+            color: #1d4ed8;
+            font-weight: 700;
+        }
+
+        .tool {
+            background: #eff6ff;
+            color: #1d4ed8;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+        }
+
+        .machine {
+            color: #475569;
+        }
+
+        /* RESPONSIVE */
+
+        @media (max-width: 900px) {
+            .summary {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+<style id="full-marks-enhancement">
+.fm-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:24px 0}.fm-card{background:#fff;border:1px solid #e5eaf1;border-radius:14px;padding:20px;box-shadow:0 8px 24px rgba(15,23,42,.05)}.fm-card h3{margin-bottom:8px}.fm-kpi{font-size:26px;font-weight:800;color:#123d69}.fm-muted{color:#718096;font-size:12px}.fm-pill{display:inline-block;padding:5px 9px;border-radius:999px;background:#eef6ff;color:#1769aa;font-size:11px;font-weight:700}.fm-section{margin-top:24px}.fm-section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:14px}.fm-section-head h2{font-size:20px}.fm-actions{display:flex;gap:10px;flex-wrap:wrap}.fm-btn{border:0;border-radius:9px;padding:10px 14px;background:#1769aa;color:#fff;text-decoration:none;font-weight:700;font-size:12px;cursor:pointer}.fm-btn.secondary{background:#eef3f8;color:#17324d}.fm-table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden}.fm-table th,.fm-table td{padding:11px 12px;border-bottom:1px solid #edf1f5;text-align:left;font-size:12px}.fm-table th{background:#f6f9fc;color:#536274;text-transform:uppercase;letter-spacing:.5px;font-size:10px}.fm-table tr.clickable{cursor:pointer}.fm-table tr.clickable:hover{background:#f5faff}.fm-modal{position:fixed;inset:0;background:rgba(9,20,35,.68);display:none;align-items:center;justify-content:center;padding:24px;z-index:9999}.fm-modal.show{display:flex}.fm-dialog{background:#fff;width:min(920px,96vw);max-height:90vh;overflow:auto;border-radius:18px;box-shadow:0 25px 80px rgba(0,0,0,.3)}.fm-dialog-head{padding:20px 24px;border-bottom:1px solid #e7edf4;display:flex;justify-content:space-between;align-items:center}.fm-dialog-head h2{font-size:20px;color:#123d69}.fm-close{border:0;background:#edf2f7;width:36px;height:36px;border-radius:50%;font-size:20px;cursor:pointer}.fm-dialog-body{padding:24px}.fm-two{display:grid;grid-template-columns:1fr 1.4fr;gap:22px}.fm-info{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.fm-info div{padding:12px;border:1px solid #e7edf4;border-radius:10px;background:#f9fbfd}.fm-info b{display:block;font-size:10px;text-transform:uppercase;color:#718096;margin-bottom:4px}.fm-hero{background:linear-gradient(135deg,#0f1c2c,#194b73);color:#fff;border-radius:16px;padding:24px}.fm-hero h1{font-size:26px;margin-bottom:7px}.fm-list{display:grid;gap:9px}.fm-list div{padding:10px 12px;background:#f7fafc;border-radius:9px}.fm-note{margin-top:14px;padding:14px;border-left:4px solid #1d9bf0;background:#f0f8ff;border-radius:8px;font-size:12px}.fm-query{background:#0d1725;color:#d8e7f7;padding:16px;border-radius:12px;overflow:auto;font:12px/1.55 Consolas,monospace}.fm-code{color:#9bd7ff}.fm-role{font-size:11px;color:#1769aa;font-weight:800}.fm-chartbar{height:10px;background:#e8eef5;border-radius:20px;overflow:hidden}.fm-chartbar span{display:block;height:100%;background:linear-gradient(90deg,#1769aa,#00a6c7);border-radius:20px}.fm-recommend{border:2px solid #1769aa;background:#f5fbff;border-radius:16px;padding:22px}.fm-score{font-size:34px;font-weight:900;color:#1769aa}.fm-print{float:right}.fm-tag{font-size:10px;font-weight:800;padding:4px 7px;border-radius:6px;background:#eef2f7;color:#536274}@media(max-width:1000px){.fm-grid{grid-template-columns:repeat(2,1fr)}.fm-two{grid-template-columns:1fr}}@media(max-width:650px){.fm-grid{grid-template-columns:1fr}.fm-info{grid-template-columns:1fr}.fm-dialog-body{padding:16px}}
+</style>
+
+</head>
+<body>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+<div class="logo">
+<div class="logo-icon">M</div>
+<div>
+<h1>MachOpt</h1>
+<span>Machining Analytics</span>
+</div>
+</div>
+<div class="menu-title">Main</div>
+<nav class="menu">
+<a class="nav-item"  href="index.html">
+<span class="icon">⌂</span>
+    Dashboard
+</a>
+<a class="nav-item active"  href="experiments.html">
+<div class="menu-icon">◫</div>
+<span>Experiments</span>
+</a>
+<a class="nav-item"  href="workpieces.html">
+<div class="menu-icon">▣</div>
+<span>Workpieces</span>
+</a>
+<a class="nav-item"  href="cutting-tools.html">
+<div class="menu-icon">⚙</div>
+<span>Cutting Tools</span>
+</a>
+<a class="nav-item"  href="machines.html">
+<div class="menu-icon">▤</div>
+<span>Machines</span>
+</a>
+<a class="nav-item"  href="operators.html">
+<div class="menu-icon">♙</div>
+<span>Operators</span>
+</a>
+</nav>
+<div class="menu-title">Analytics</div>
+<nav class="menu">
+<a class="nav-item"  href="results-analysis.html">
+<div class="menu-icon">◈</div>
+<span>Results Analysis</span>
+</a>
+<a class="nav-item"  href="energy-analysis.html">
+<span class="icon">ϟ</span>
+    Energy Analysis
+</a>
+<a class="nav-item"  href="cost-analysis.html">
+<span class="icon">₹</span>
+    Cost Analysis
+</a>
+<a class="nav-item"  href="optimization.html">
+<span class="icon">✦</span>
+    Optimization
+</a>
+</nav>
+</aside>
+<!-- MAIN -->
+<main class="main">
+<header class="topbar">
+<div class="page-title">
+<h2>Experiments</h2>
+<p>Machining experiment database</p>
+</div>
+<div class="top-right">
+<div class="status">
+<div class="status-dot"></div>
+                    System Online
+                </div>
+<div class="avatar">M</div>
+</div>
+</header>
+<section class="content">
+<div class="page-header">
+<div>
+<h1>Machining Experiments</h1>
+<p>
+                        Explore machining parameters recorded across all CNC experiments.
+                    </p>
+</div>
+<div class="experiment-count">
+                    18 Experiments
+                </div>
+</div>
+<!-- SUMMARY -->
+<div class="summary">
+<div class="summary-card">
+<p>Total Experiments</p>
+<h2>18</h2>
+</div>
+<div class="summary-card">
+<p>Workpiece Materials</p>
+<h2>5</h2>
+</div>
+<div class="summary-card">
+<p>Cutting Tools</p>
+<h2>4</h2>
+</div>
+</div>
+<!-- TABLE -->
+<div class="table-panel">
+<div class="table-top">
+<h3>Experiment Records</h3>
+<input class="search" id="searchInput" onkeyup="searchTable()" placeholder="Search experiments..." type="text"/>
+</div>
+<div class="table-wrapper">
+<table id="experimentTable">
+<thead>
+<tr>
+<th>Experiment</th>
+<th>Workpiece</th>
+<th>Tool</th>
+<th>Machine</th>
+<th>Operator</th>
+<th>Speed</th>
+<th>Feed Rate</th>
+<th>Depth Cut</th>
+<th>Time</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="experiment-id">E01</td>
+<td>Aluminium 6061</td>
+<td><span class="tool">HSS</span></td>
+<td class="machine">M01</td>
+<td>O01</td>
+<td>120 m/min</td>
+<td>80 mm/min</td>
+<td>0.50 mm</td>
+<td>18 min</td>
+</tr>
+<tr>
+<td class="experiment-id">E02</td>
+<td>Aluminium 6061</td>
+<td><span class="tool">Carbide</span></td>
+<td class="machine">M01</td>
+<td>O01</td>
+<td>180 m/min</td>
+<td>100 mm/min</td>
+<td>0.75 mm</td>
+<td>14 min</td>
+</tr>
+<tr>
+<td class="experiment-id">E03</td>
+<td>Aluminium 6061</td>
+<td><span class="tool">Carbide</span></td>
+<td class="machine">M02</td>
+<td>O02</td>
+<td>220 m/min</td>
+<td>120 mm/min</td>
+<td>1.00 mm</td>
+<td>11 min</td>
+</tr>
+<tr>
+<td class="experiment-id">E04</td>
+<td>Aluminium 6061</td>
+<td><span class="tool">Coated Carbide</span></td>
+<td class="machine">M02</td>
+<td>O02</td>
+<td>250 m/min</td>
+<td>140 mm/min</td>
+<td>1.25 mm</td>
+<td>9 min</td>
+</tr>
+<tr>
+<td class="experiment-id">E05</td>
+<td>Mild Steel</td>
+<td><span class="tool">HSS</span></td>
+<td class="machine">M01</td>
+<td>O03</td>
+<td>80 m/min</td>
+<td>60 mm/min</td>
+<td>0.50 mm</td>
+<td>25 min</td>
+</tr>
+<tr>
+<td class="experiment-id">E06</td>
+<td>Mild Steel</td>
+<td><span class="tool">Carbide</span></td>
+<td class="machine">M02</td>
+<td>O03</td>
+<td>120 m/min</td>
+<td>80 mm/min</td>
+<td>0.75 mm</td>
+<td>20 min</td>
+</tr>
+<tr>
+<td class="experiment-id">E07</td>
+<td>Mild Steel</td>
+<td><span class="tool">Coated Carbide</span></td>
+<td class="machine">M02</td>
+<td>O04</td>
+<td>160 m/min</td>
+<td>100 mm/min</td>
+<td>1.00 mm</td>
+<td>16 min</td>
+</tr>
+<tr>
+<td class="experiment-id">E08</td>
+<td>Mild Steel</td>
+<td><span class="tool">Ceramic</span></td>
+<td class="machine">M03</td>
+<td>O04</td>
+<td>200 m/min</td>
+<td>120 mm/min</td>
+<td>1.25 mm</td>
+<td>13 min</td>
+</tr>
+<tr>
+<td class="experiment-id">E09</td>
+<td>Stainless Steel 304</td>
+<td><span class="tool">HSS</span></td>
+<td class="machine">M01</td>
+<td>O01</td>
+<td>60 m/min</td>
+<td>50 mm/min</td>
+<td>0.40 mm</td>
+<td>30 min</td>
+</tr>
+<tr>
+<td class="experiment-id">E10</td>
+<td>Stainless Steel 304</td>
+<td><span class="tool">Carbide</span></td>
+<td class="machine">M02</td>
+<td>O02</td>
+<td>100 m/min</td>
+<td>70 mm/min</td>
+<td>0.60 mm</td>
+<td>24 min</td>
+</tr>
+<tr>
+<td class="experiment-id">E11</td>
+<td>Stainless Steel 304</td>
+<td><span class="tool">Ceramic</span></td>
+<td class="machine">M03</td>
+<td>O03</td>
+<td>140 m/min</td>
+<td>90 mm/min</td>
+<td>0.80 mm</td>
+<td>19 min</td>
+</tr>
+<tr>
+<td class="experiment-id">E12</td>
+<td>Stainless Steel 304</td>
+<td><span class="tool">Coated Carbide</span></td>
+<td class="machine">M03</td>
+<td>O04</td>
+<td>180 m/min</td>
+<td>110 mm/min</td>
+<td>1.00 mm</td>
+<td>15 min</td>
+</tr>
+<tr>
+<td class="experiment-id">E13</td>
+<td>Brass</td>
+<td><span class="tool">HSS</span></td>
+<td class="machine">M01</td>
+<td>O01</td>
+<td>150 m/min</td>
+<td>100 mm/min</td>
+<td>0.75 mm</td>
+<td>16 min</td>
+</tr>
+<tr>
+<td class="experiment-id">E14</td>
+<td>Brass</td>
+<td><span class="tool">Carbide</span></td>
+<td class="machine">M01</td>
+<td>O02</td>
+<td>200 m/min</td>
+<td>130 mm/min</td>
+<td>1.00 mm</td>
+<td>12 min</td>
+</tr>
+<tr>
+<td class="experiment-id">E15</td>
+<td>Brass</td>
+<td><span class="tool">Coated Carbide</span></td>
+<td class="machine">M02</td>
+<td>O03</td>
+<td>250 m/min</td>
+<td>150 mm/min</td>
+<td>1.25 mm</td>
+<td>9 min</td>
+</tr>
+<tr>
+<td class="experiment-id">E16</td>
+<td>Cast Iron</td>
+<td><span class="tool">HSS</span></td>
+<td class="machine">M01</td>
+<td>O03</td>
+<td>50 m/min</td>
+<td>40 mm/min</td>
+<td>0.40 mm</td>
+<td>35 min</td>
+</tr>
+<tr>
+<td class="experiment-id">E17</td>
+<td>Cast Iron</td>
+<td><span class="tool">Carbide</span></td>
+<td class="machine">M02</td>
+<td>O04</td>
+<td>80 m/min</td>
+<td>60 mm/min</td>
+<td>0.60 mm</td>
+<td>28 min</td>
+</tr>
+<tr>
+<td class="experiment-id">E18</td>
+<td>Cast Iron</td>
+<td><span class="tool">Ceramic</span></td>
+<td class="machine">M03</td>
+<td>O04</td>
+<td>120 m/min</td>
+<td>80 mm/min</td>
+<td>0.80 mm</td>
+<td>22 min</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+
+<div id="fmExpModal" class="fm-modal"><div class="fm-dialog"><div class="fm-dialog-head"><h2 id="fmExpTitle">Experiment Details</h2><button class="fm-close" onclick="fmCloseExp()">×</button></div><div class="fm-dialog-body" id="fmExpBody"></div></div></div>
+<script>
+const FM_EXP={"E01": ("Aluminium 6061", "HSS", "M01", "Aditya", 120, 80, 0.5, 18, 0.18, 3.2, 32, 2.25, 202.5), "E02": ("Aluminium 6061", "Carbide", "M01", "Aditya", 180, 100, 0.75, 14, 0.12, 2.6, 48, 2.1, 161), "E03": ("Aluminium 6061", "Carbide", "M02", "Mohitha", 220, 120, 1.0, 11, 0.095, 2.1, 65, 2.05, 130.5), "E04": ("Aluminium 6061", "Coated Carbide", "M02", "Mohitha", 250, 140, 1.25, 9, 0.11, 2.3, 78, 2.0, 110), "E05": ("Mild Steel", "HSS", "M01", "Rakesh", 80, 60, 0.5, 25, 0.26, 4.1, 28, 3.2, 282), "E06": ("Mild Steel", "Carbide", "M02", "Rakesh", 120, 80, 0.75, 20, 0.17, 3.2, 42, 3.0, 230), "E07": ("Mild Steel", "Coated Carbide", "M02", "Prasanna", 160, 100, 1, 16, 0.125, 2.7, 58, 2.8, 188), "E08": ("Mild Steel", "Ceramic", "M03", "Prasanna", 200, 120, 1.25, 13, 0.14, 2.9, 70, 2.75, 157.5), "E09": ("Stainless Steel 304", "HSS", "M01", "Aditya", 60, 50, 0.4, 30, 0.31, 4.8, 25, 4.1, 341), "E10": ("Stainless Steel 304", "Carbide", "M02", "Mohitha", 100, 70, 0.6, 24, 0.22, 3.6, 38, 3.8, 278), "E11": ("Stainless Steel 304", "Ceramic", "M03", "Rakesh", 140, 90, 0.8, 19, 0.16, 2.8, 55, 3.5, 225), "E12": ("Stainless Steel 304", "Coated Carbide", "M03", "Prasanna", 180, 110, 1, 15, 0.145, 2.5, 68, 3.3, 183), "E13": ("Brass", "HSS", "M01", "Aditya", 150, 100, 0.75, 16, 0.15, 3.0, 45, 2.2, 182), "E14": ("Brass", "Carbide", "M01", "Mohitha", 200, 130, 1, 12, 0.11, 2.4, 62, 2.0, 140), "E15": ("Brass", "Coated Carbide", "M02", "Rakesh", 250, 150, 1.25, 9, 0.1, 2.2, 80, 1.9, 109), "E16": ("Cast Iron", "HSS", "M01", "Rakesh", 50, 40, 0.4, 35, 0.35, 5.2, 22, 4.5, 395), "E17": ("Cast Iron", "Carbide", "M02", "Prasanna", 80, 60, 0.6, 28, 0.23, 3.8, 36, 4.1, 321), "E18": ("Cast Iron", "Ceramic", "M03", "Prasanna", 120, 80, 0.8, 22, 0.18, 3.1, 50, 3.8, 258)};
+function fmOpenExp(id){const d=FM_EXP[id];if(!d)return;document.getElementById('fmExpTitle').textContent=id+' — Experiment Details';document.getElementById('fmExpBody').innerHTML=`<div class="fm-hero"><span class="fm-pill">MACHINING EXPERIMENT</span><h1>${id}</h1><p>${d[0]} • ${d[1]} • ${d[2]} • Operator ${d[3]}</p></div><div class="fm-section"><h3>Machining Parameters</h3><div class="fm-info" style="margin-top:10px"><div><b>Spindle Speed</b>${d[4]} rpm</div><div><b>Feed Rate</b>${d[5]} mm/min</div><div><b>Depth of Cut</b>${d[6]} mm</div><div><b>Machining Time</b>${d[7]} min</div></div></div><div class="fm-section"><h3>Measured Results</h3><div class="fm-info" style="margin-top:10px"><div><b>Tool Wear</b>${d[8]} mm</div><div><b>Surface Roughness</b>${d[9]} µm</div><div><b>Material Removal Rate</b>${d[10]} cm³/min</div><div><b>Energy</b>${d[11]} kWh</div><div><b>Total Cost</b>₹${d[12].toFixed(2)}</div></div></div><div class="fm-note"><b>Decision support:</b> ${id==='E03'?'Excellent quality-oriented condition with the lowest tool wear in the dataset.':id==='E15'?'Best productivity/economic condition with highest MRR and lowest energy and cost.':'Use this record for comparative CNC parameter analysis.'}</div>`;document.getElementById('fmExpModal').classList.add('show');document.body.style.overflow='hidden'}function fmCloseExp(){document.getElementById('fmExpModal').classList.remove('show');document.body.style.overflow=''}
+const erows=document.querySelectorAll('#experimentTable tbody tr');erows.forEach(r=>{const id=r.cells[0]?.innerText.trim();if(FM_EXP[id]){r.classList.add('clickable');r.title='Click for experiment details';r.addEventListener('click',()=>fmOpenExp(id));}});document.addEventListener('keydown',e=>{if(e.key==='Escape')fmCloseExp()});document.getElementById('fmExpModal').addEventListener('click',e=>{if(e.target.id==='fmExpModal')fmCloseExp()});
+</script>
+
+</main>
+<script>
+
+        function searchTable() {
+
+            const input =
+                document.getElementById("searchInput").value.toLowerCase();
+
+            const rows =
+                document.querySelectorAll("#experimentTable tbody tr");
+
+            rows.forEach(row => {
+
+                const text = row.innerText.toLowerCase();
+
+                row.style.display =
+                    text.includes(input) ? "" : "none";
+
+            });
+
+        }
+
+    </script>
+    <script src="auth.js"></script>
+</body>
+</html>

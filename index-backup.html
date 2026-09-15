@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>MachOpt | Machining Optimization &amp; Analytics</title>
+<style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #f4f7fb;
+            color: #172033;
+        }
+
+        /* ================= SIDEBAR ================= */
+
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 255px;
+            height: 100vh;
+            background: #101827;
+            color: white;
+            padding: 25px 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 0 12px 30px;
+            border-bottom: 1px solid #273449;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #2563eb, #06b6d4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+            font-weight: bold;
+        }
+
+        .logo h1 {
+            font-size: 23px;
+            letter-spacing: .5px;
+        }
+
+        .logo span {
+            display: block;
+            font-size: 10px;
+            color: #8fa0b8;
+            margin-top: 2px;
+        }
+
+        .menu-title {
+            font-size: 10px;
+            color: #718096;
+            letter-spacing: 1.5px;
+            margin: 27px 12px 10px;
+            text-transform: uppercase;
+        }
+
+        .menu a {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            text-decoration: none;
+            color: #aab7ca;
+            padding: 12px 14px;
+            margin: 4px 0;
+            border-radius: 9px;
+            font-size: 14px;
+            transition: .2s;
+        }
+
+        .menu a:hover,
+        .menu a.active {
+            background: #1d4ed8;
+            color: white;
+        }
+
+        .menu-icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* ================= MAIN ================= */
+
+        .main {
+            margin-left: 255px;
+            min-height: 100vh;
+        }
+
+        .topbar {
+            height: 75px;
+            background: white;
+            border-bottom: 1px solid #e4e9f0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+        }
+
+        .page-title h2 {
+            font-size: 21px;
+            font-weight: 650;
+        }
+
+        .page-title p {
+            font-size: 12px;
+            color: #7b8798;
+            margin-top: 4px;
+        }
+
+        .profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #22c55e;
+        }
+
+        .avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: #dbeafe;
+            color: #1d4ed8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: 700;
+        }
+
+        .content {
+            padding: 30px 32px;
+        }
+
+        /* ================= HERO ================= */
+
+        .hero {
+            background: linear-gradient(120deg, #172554, #1e40af, #0369a1);
+            border-radius: 16px;
+            padding: 27px 30px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 25px;
+        }
+
+        .hero::after {
+            content: "";
+            position: absolute;
+            width: 250px;
+            height: 250px;
+            border: 35px solid rgba(255,255,255,.06);
+            border-radius: 50%;
+            right: -70px;
+            top: -100px;
+        }
+
+        .hero h1 {
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+
+        .hero p {
+            color: #dbeafe;
+            max-width: 650px;
+            line-height: 1.6;
+            font-size: 13px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            margin-top: 16px;
+            padding: 7px 12px;
+            border-radius: 20px;
+            background: rgba(255,255,255,.12);
+            font-size: 11px;
+        }
+
+        /* ================= STAT CARDS ================= */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: white;
+            border: 1px solid #e7ecf3;
+            border-radius: 14px;
+            padding: 20px;
+            position: relative;
+            transition: .2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(15,23,42,.08);
+        }
+
+        .stat-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #718096;
+        }
+
+        .stat-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #eff6ff;
+            color: #2563eb;
+            font-size: 18px;
+        }
+
+        .stat-value {
+            font-size: 27px;
+            font-weight: 700;
+            margin-top: 13px;
+        }
+
+        .stat-sub {
+            font-size: 11px;
+            color: #94a3b8;
+            margin-top: 5px;
+        }
+
+        /* ================= GRID ================= */
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 20px;
+        }
+
+        .panel {
+            background: white;
+            border: 1px solid #e7ecf3;
+            border-radius: 14px;
+            padding: 22px;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 22px;
+        }
+
+        .panel-header h3 {
+            font-size: 15px;
+        }
+
+        .panel-header span {
+            font-size: 11px;
+            color: #94a3b8;
+        }
+
+        /* ================= BAR CHART ================= */
+
+        .chart {
+            height: 220px;
+            display: flex;
+            align-items: end;
+            justify-content: space-around;
+            gap: 13px;
+            padding: 10px 10px 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .bar-wrapper {
+            height: 100%;
+            display: flex;
+            align-items: end;
+            gap: 5px;
+        }
+
+        .bar {
+            width: 20px;
+            border-radius: 5px 5px 0 0;
+            background: linear-gradient(to top, #2563eb, #38bdf8);
+            transition: .3s;
+        }
+
+        .bar:hover {
+            opacity: .75;
+        }
+
+        .bar-labels {
+            display: flex;
+            justify-content: space-around;
+            padding: 9px 5px 0;
+            color: #94a3b8;
+            font-size: 10px;
+        }
+
+        /* ================= PERFORMANCE ================= */
+
+        .performance-item {
+            margin-bottom: 18px;
+        }
+
+        .performance-head {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 7px;
+            font-size: 12px;
+        }
+
+        .performance-head span:last-child {
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .progress {
+            height: 7px;
+            background: #edf2f7;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress div {
+            height: 100%;
+            border-radius: 10px;
+            background: linear-gradient(90deg, #2563eb, #06b6d4);
+        }
+
+        /* ================= TABLE ================= */
+
+        .table-panel {
+            margin-top: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            font-size: 10px;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: .5px;
+            padding: 12px;
+            background: #f8fafc;
+        }
+
+        td {
+            padding: 13px 12px;
+            border-bottom: 1px solid #edf1f5;
+            font-size: 12px;
+        }
+
+        .badge {
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+            background: #ecfdf5;
+            color: #047857;
+        }
+
+        .badge.blue {
+            background: #eff6ff;
+            color: #1d4ed8;
+        }
+
+        /* ================= RESPONSIVE ================= */
+
+        @media (max-width: 1100px) {
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 750px) {
+            .sidebar {
+                width: 70px;
+                padding: 20px 8px;
+            }
+
+            .logo h1,
+            .logo span,
+            .menu-title,
+            .menu a span {
+                display: none;
+            }
+
+            .logo {
+                border: none;
+                justify-content: center;
+                padding: 0 0 20px;
+            }
+
+            .main {
+                margin-left: 70px;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+<style id="full-marks-enhancement">
+.fm-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:24px 0}.fm-card{background:#fff;border:1px solid #e5eaf1;border-radius:14px;padding:20px;box-shadow:0 8px 24px rgba(15,23,42,.05)}.fm-card h3{margin-bottom:8px}.fm-kpi{font-size:26px;font-weight:800;color:#123d69}.fm-muted{color:#718096;font-size:12px}.fm-pill{display:inline-block;padding:5px 9px;border-radius:999px;background:#eef6ff;color:#1769aa;font-size:11px;font-weight:700}.fm-section{margin-top:24px}.fm-section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:14px}.fm-section-head h2{font-size:20px}.fm-actions{display:flex;gap:10px;flex-wrap:wrap}.fm-btn{border:0;border-radius:9px;padding:10px 14px;background:#1769aa;color:#fff;text-decoration:none;font-weight:700;font-size:12px;cursor:pointer}.fm-btn.secondary{background:#eef3f8;color:#17324d}.fm-table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden}.fm-table th,.fm-table td{padding:11px 12px;border-bottom:1px solid #edf1f5;text-align:left;font-size:12px}.fm-table th{background:#f6f9fc;color:#536274;text-transform:uppercase;letter-spacing:.5px;font-size:10px}.fm-table tr.clickable{cursor:pointer}.fm-table tr.clickable:hover{background:#f5faff}.fm-modal{position:fixed;inset:0;background:rgba(9,20,35,.68);display:none;align-items:center;justify-content:center;padding:24px;z-index:9999}.fm-modal.show{display:flex}.fm-dialog{background:#fff;width:min(920px,96vw);max-height:90vh;overflow:auto;border-radius:18px;box-shadow:0 25px 80px rgba(0,0,0,.3)}.fm-dialog-head{padding:20px 24px;border-bottom:1px solid #e7edf4;display:flex;justify-content:space-between;align-items:center}.fm-dialog-head h2{font-size:20px;color:#123d69}.fm-close{border:0;background:#edf2f7;width:36px;height:36px;border-radius:50%;font-size:20px;cursor:pointer}.fm-dialog-body{padding:24px}.fm-two{display:grid;grid-template-columns:1fr 1.4fr;gap:22px}.fm-info{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.fm-info div{padding:12px;border:1px solid #e7edf4;border-radius:10px;background:#f9fbfd}.fm-info b{display:block;font-size:10px;text-transform:uppercase;color:#718096;margin-bottom:4px}.fm-hero{background:linear-gradient(135deg,#0f1c2c,#194b73);color:#fff;border-radius:16px;padding:24px}.fm-hero h1{font-size:26px;margin-bottom:7px}.fm-list{display:grid;gap:9px}.fm-list div{padding:10px 12px;background:#f7fafc;border-radius:9px}.fm-note{margin-top:14px;padding:14px;border-left:4px solid #1d9bf0;background:#f0f8ff;border-radius:8px;font-size:12px}.fm-query{background:#0d1725;color:#d8e7f7;padding:16px;border-radius:12px;overflow:auto;font:12px/1.55 Consolas,monospace}.fm-code{color:#9bd7ff}.fm-role{font-size:11px;color:#1769aa;font-weight:800}.fm-chartbar{height:10px;background:#e8eef5;border-radius:20px;overflow:hidden}.fm-chartbar span{display:block;height:100%;background:linear-gradient(90deg,#1769aa,#00a6c7);border-radius:20px}.fm-recommend{border:2px solid #1769aa;background:#f5fbff;border-radius:16px;padding:22px}.fm-score{font-size:34px;font-weight:900;color:#1769aa}.fm-print{float:right}.fm-tag{font-size:10px;font-weight:800;padding:4px 7px;border-radius:6px;background:#eef2f7;color:#536274}@media(max-width:1000px){.fm-grid{grid-template-columns:repeat(2,1fr)}.fm-two{grid-template-columns:1fr}}@media(max-width:650px){.fm-grid{grid-template-columns:1fr}.fm-info{grid-template-columns:1fr}.fm-dialog-body{padding:16px}}
+</style>
+
+</head>
+<body>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+<div class="logo">
+<div class="logo-icon">M</div>
+<div>
+<h1>MachOpt</h1>
+<span>Machining Analytics</span>
+</div>
+</div>
+<div class="menu-title">Main</div>
+<nav class="menu">
+<a class="nav-item active" href="index.html">
+<span class="icon">⌂</span>
+    Dashboard
+</a>
+<a class="nav-item" href="experiments.html">
+<span class="icon">▣</span>
+    Experiments
+</a>
+<a class="nav-item" href="workpieces.html">
+<div class="menu-icon">▣</div>
+<span>Workpieces</span>
+</a>
+<a class="nav-item" href="cutting-tools.html">
+<div class="menu-icon">⚙</div>
+<span>Cutting Tools</span>
+</a>
+<a class="nav-item" href="machines.html">
+<div class="menu-icon">▤</div>
+<span>Machines</span>
+</a>
+<a class="nav-item" href="operators.html">
+<div class="menu-icon">♙</div>
+<span>Operators</span>
+</a>
+</nav>
+<div class="menu-title">Analytics</div>
+<nav class="menu">
+<a class="nav-item" href="results-analysis.html">
+<div class="menu-icon">◈</div>
+<span>Results Analysis</span>
+</a>
+<a class="nav-item" href="energy-analysis.html">
+<span class="icon">ϟ</span>
+    Energy Analysis
+</a>
+<a class="nav-item" href="cost-analysis.html">
+<span class="icon">₹</span>
+    Cost Analysis
+</a>
+<a class="nav-item" href="optimization.html">
+<span class="icon">✦</span>
+    Optimization
+</a>
+</nav>
+</aside>
+<!-- MAIN CONTENT -->
+<main class="main">
+<!-- TOP BAR -->
+<header class="topbar">
+<div class="page-title">
+<h2>Dashboard</h2>
+<p>Machining performance overview</p>
+</div>
+<div class="profile">
+<div class="status">
+<div class="status-dot"></div>
+                    System Online
+                </div>
+<div class="avatar">M</div>
+</div>
+</header>
+<section class="content">
+<!-- HERO -->
+<div class="hero">
+<h1>Machining Optimization &amp; Analytics</h1>
+<p>
+                    Analyze CNC machining experiments, monitor tool performance,
+                    compare machining conditions and identify efficient operating
+                    parameters using data-driven analysis.
+                </p>
+<div class="hero-badge">
+                    ● MachOptDB   |   CNC Machining Intelligence
+                </div>
+</div>
+<!-- STATISTICS -->
+<div class="stats">
+<div class="stat-card">
+<div class="stat-top">
+<div class="stat-label">Total Experiments</div>
+<div class="stat-icon">◫</div>
+</div>
+<div class="stat-value">18</div>
+<div class="stat-sub">
+                        Experimental records
+                    </div>
+</div>
+<div class="stat-card">
+<div class="stat-top">
+<div class="stat-label">Average Tool Wear</div>
+<div class="stat-icon">⚙</div>
+</div>
+<div class="stat-value">0.175 <small>mm</small></div>
+<div class="stat-sub">
+                        Across all experiments
+                    </div>
+</div>
+<div class="stat-card">
+<div class="stat-top">
+<div class="stat-label">Maximum MRR</div>
+<div class="stat-icon">↗</div>
+</div>
+<div class="stat-value">80 <small>cm³/min</small></div>
+<div class="stat-sub">
+                        Highest productivity
+                    </div>
+</div>
+<div class="stat-card">
+<div class="stat-top">
+<div class="stat-label">Minimum Cost</div>
+<div class="stat-icon">₹</div>
+</div>
+<div class="stat-value">109</div>
+<div class="stat-sub">
+                        Best recorded machining cost
+                    </div>
+</div>
+</div>
+<!-- ANALYTICS -->
+<div class="dashboard-grid">
+<div class="panel">
+<div class="panel-header">
+<h3>Tool Wear by Experiment</h3>
+<span>mm</span>
+</div>
+<div class="chart">
+<div class="bar-wrapper"><div class="bar" style="height:52%"></div></div>
+<div class="bar-wrapper"><div class="bar" style="height:34%"></div></div>
+<div class="bar-wrapper"><div class="bar" style="height:27%"></div></div>
+<div class="bar-wrapper"><div class="bar" style="height:31%"></div></div>
+<div class="bar-wrapper"><div class="bar" style="height:74%"></div></div>
+<div class="bar-wrapper"><div class="bar" style="height:49%"></div></div>
+<div class="bar-wrapper"><div class="bar" style="height:36%"></div></div>
+<div class="bar-wrapper"><div class="bar" style="height:40%"></div></div>
+<div class="bar-wrapper"><div class="bar" style="height:89%"></div></div>
+<div class="bar-wrapper"><div class="bar" style="height:63%"></div></div>
+<div class="bar-wrapper"><div class="bar" style="height:46%"></div></div>
+<div class="bar-wrapper"><div class="bar" style="height:41%"></div></div>
+<div class="bar-wrapper"><div class="bar" style="height:43%"></div></div>
+<div class="bar-wrapper"><div class="bar" style="height:31%"></div></div>
+<div class="bar-wrapper"><div class="bar" style="height:29%"></div></div>
+<div class="bar-wrapper"><div class="bar" style="height:100%"></div></div>
+<div class="bar-wrapper"><div class="bar" style="height:66%"></div></div>
+<div class="bar-wrapper"><div class="bar" style="height:52%"></div></div>
+</div>
+<div class="bar-labels">
+<span>E01</span>
+<span>E04</span>
+<span>E07</span>
+<span>E10</span>
+<span>E13</span>
+<span>E16</span>
+<span>E18</span>
+</div>
+</div>
+<div class="panel">
+<div class="panel-header">
+<h3>Performance Indicators</h3>
+<span>Overall</span>
+</div>
+<div class="performance-item">
+<div class="performance-head">
+<span>Tool Performance</span>
+<span>82%</span>
+</div>
+<div class="progress">
+<div style="width:82%"></div>
+</div>
+</div>
+<div class="performance-item">
+<div class="performance-head">
+<span>Surface Quality</span>
+<span>78%</span>
+</div>
+<div class="progress">
+<div style="width:78%"></div>
+</div>
+</div>
+<div class="performance-item">
+<div class="performance-head">
+<span>Material Removal</span>
+<span>91%</span>
+</div>
+<div class="progress">
+<div style="width:91%"></div>
+</div>
+</div>
+<div class="performance-item">
+<div class="performance-head">
+<span>Energy Efficiency</span>
+<span>86%</span>
+</div>
+<div class="progress">
+<div style="width:86%"></div>
+</div>
+</div>
+<div class="performance-item">
+<div class="performance-head">
+<span>Cost Efficiency</span>
+<span>93%</span>
+</div>
+<div class="progress">
+<div style="width:93%"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- BEST EXPERIMENTS -->
+<div class="panel table-panel">
+<div class="panel-header">
+<h3>Key Machining Conditions</h3>
+<span>Selected experimental results</span>
+</div>
+<table>
+<thead>
+<tr>
+<th>Experiment</th>
+<th>Material</th>
+<th>Tool</th>
+<th>Cutting Speed</th>
+<th>Tool Wear</th>
+<th>MRR</th>
+<th>Energy</th>
+<th>Cost</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>E03</strong></td>
+<td>Aluminium 6061</td>
+<td><span class="badge blue">Carbide</span></td>
+<td>220 m/min</td>
+<td>0.095 mm</td>
+<td>65 cm³/min</td>
+<td>2.05 kWh</td>
+<td>₹130.50</td>
+</tr>
+<tr>
+<td><strong>E15</strong></td>
+<td>Brass</td>
+<td><span class="badge">Coated Carbide</span></td>
+<td>250 m/min</td>
+<td>0.100 mm</td>
+<td>80 cm³/min</td>
+<td>1.90 kWh</td>
+<td>₹109.00</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+</main>
+</body>
+</html>

@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Optimization | MachOpt</title>
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Segoe UI",Arial,sans-serif;
+}
+
+body{
+    background:#f4f7fb;
+    color:#172033;
+}
+
+/* SIDEBAR */
+.sidebar{
+    position:fixed;
+    left:0;
+    top:0;
+    width:255px;
+    height:100vh;
+    background:#101827;
+    color:white;
+    padding:24px 16px;
+    overflow-y:auto;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:0 12px 28px;
+    font-size:23px;
+    font-weight:700;
+}
+
+.logo-icon{
+    width:38px;
+    height:38px;
+    border-radius:10px;
+    background:linear-gradient(135deg,#1d9bf0,#00d4ff);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:bold;
+}
+
+.section-title{
+    color:#718096;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:1px;
+    padding:12px;
+    text-transform:uppercase;
+}
+
+.nav-item{
+    display:flex;
+    align-items:center;
+    gap:13px;
+    padding:12px 14px;
+    margin:4px 0;
+    border-radius:9px;
+    color:#aeb9ca;
+    text-decoration:none;
+    font-size:14px;
+    transition:.2s;
+}
+
+.nav-item:hover{
+    background:#1a2639;
+    color:white;
+}
+
+.nav-item.active{
+    background:linear-gradient(90deg,#1677c8,#155a91);
+    color:white;
+}
+
+.icon{
+    width:22px;
+    text-align:center;
+}
+
+/* MAIN */
+.main{
+    margin-left:255px;
+    min-height:100vh;
+}
+
+.topbar{
+    height:76px;
+    background:white;
+    border-bottom:1px solid #e5eaf1;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 32px;
+}
+
+.page-title{
+    font-size:22px;
+    font-weight:700;
+}
+
+.page-subtitle{
+    font-size:12px;
+    color:#7b8798;
+    margin-top:3px;
+}
+
+.top-right{
+    display:flex;
+    align-items:center;
+    gap:18px;
+}
+
+.status{
+    background:#e9f9f0;
+    color:#1d9255;
+    padding:7px 12px;
+    border-radius:20px;
+    font-size:12px;
+    font-weight:600;
+}
+
+.avatar{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:#172033;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:600;
+}
+
+/* CONTENT */
+.content{
+    padding:30px 32px;
+}
+
+/* HERO */
+.hero{
+    background:linear-gradient(135deg,#101827,#17314d);
+    color:white;
+    border-radius:16px;
+    padding:30px;
+    margin-bottom:24px;
+}
+
+.hero h1{
+    font-size:27px;
+    margin-bottom:9px;
+}
+
+.hero p{
+    color:#b7c6d9;
+    font-size:14px;
+    max-width:800px;
+    line-height:1.6;
+}
+
+/* RECOMMENDATION */
+.recommendation{
+    background:linear-gradient(135deg,#eaf8f1,#f8fcfa);
+    border:1px solid #ccebdd;
+    border-radius:15px;
+    padding:23px;
+    margin-bottom:24px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:20px;
+}
+
+.rec-left{
+    display:flex;
+    align-items:center;
+    gap:17px;
+}
+
+.rec-icon{
+    width:54px;
+    height:54px;
+    border-radius:14px;
+    background:#19a567;
+    color:white;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:25px;
+    font-weight:bold;
+}
+
+.rec-title{
+    font-size:17px;
+    font-weight:750;
+}
+
+.rec-text{
+    font-size:12px;
+    color:#60716a;
+    margin-top:4px;
+}
+
+.rec-badge{
+    background:#19a567;
+    color:white;
+    padding:9px 15px;
+    border-radius:22px;
+    font-size:11px;
+    font-weight:700;
+}
+
+/* STATS */
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:18px;
+    margin-bottom:25px;
+}
+
+.stat-card{
+    background:white;
+    border:1px solid #e5eaf1;
+    border-radius:14px;
+    padding:20px;
+    box-shadow:0 5px 18px rgba(30,50,80,.05);
+}
+
+.stat-label{
+    color:#7a8799;
+    font-size:12px;
+    font-weight:600;
+}
+
+.stat-value{
+    font-size:25px;
+    font-weight:750;
+    margin-top:8px;
+}
+
+.stat-info{
+    font-size:11px;
+    color:#8c98a8;
+    margin-top:6px;
+}
+
+.blue{color:#1677c8;}
+.green{color:#16965a;}
+.orange{color:#e28719;}
+.purple{color:#7657c9;}
+
+/* GRID */
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:22px;
+    margin-bottom:24px;
+}
+
+.panel{
+    background:white;
+    border:1px solid #e5eaf1;
+    border-radius:14px;
+    padding:22px;
+    box-shadow:0 5px 18px rgba(30,50,80,.04);
+}
+
+.panel-header{
+    margin-bottom:20px;
+}
+
+.panel-title{
+    font-size:16px;
+    font-weight:700;
+}
+
+.panel-desc{
+    color:#8793a3;
+    font-size:11px;
+    margin-top:4px;
+}
+
+/* PARAMETERS */
+.parameter{
+    margin-bottom:18px;
+}
+
+.parameter-top{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:7px;
+}
+
+.parameter-name{
+    font-size:12px;
+    font-weight:650;
+}
+
+.parameter-value{
+    color:#1677c8;
+    font-size:12px;
+    font-weight:700;
+}
+
+.parameter-bar{
+    height:8px;
+    background:#edf1f5;
+    border-radius:10px;
+    overflow:hidden;
+}
+
+.parameter-fill{
+    height:100%;
+    border-radius:10px;
+    background:linear-gradient(90deg,#1677c8,#20aeea);
+}
+
+.speed{width:83%;}
+.feed{width:76%;}
+.depth{width:92%;}
+.quality{width:94%;}
+
+/* SCORE */
+.score-box{
+    display:flex;
+    align-items:center;
+    gap:22px;
+    margin-bottom:22px;
+}
+
+.score-circle{
+    width:105px;
+    height:105px;
+    border-radius:50%;
+    background:conic-gradient(#19a567 0deg 331deg,#e7edf0 331deg 360deg);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+}
+
+.score-circle::before{
+    content:"";
+    position:absolute;
+    width:78px;
+    height:78px;
+    border-radius:50%;
+    background:white;
+}
+
+.score-number{
+    position:relative;
+    font-size:23px;
+    font-weight:800;
+    color:#172033;
+}
+
+.score-text h3{
+    font-size:16px;
+    margin-bottom:5px;
+}
+
+.score-text p{
+    font-size:11px;
+    color:#7d8998;
+    line-height:1.5;
+}
+
+/* CHECKLIST */
+.check{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding:10px 0;
+    border-bottom:1px solid #edf0f4;
+}
+
+.check:last-child{
+    border-bottom:none;
+}
+
+.check-icon{
+    width:22px;
+    height:22px;
+    border-radius:50%;
+    background:#e5f8ef;
+    color:#15945b;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:12px;
+    font-weight:bold;
+}
+
+.check span{
+    font-size:12px;
+}
+
+/* TABLE */
+.table-panel{
+    background:white;
+    border:1px solid #e5eaf1;
+    border-radius:14px;
+    padding:22px;
+    box-shadow:0 5px 18px rgba(30,50,80,.04);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    text-align:left;
+    padding:13px 10px;
+    background:#f7f9fc;
+    color:#687588;
+    font-size:10px;
+    font-weight:700;
+    border-bottom:1px solid #e3e8ef;
+}
+
+td{
+    padding:14px 10px;
+    border-bottom:1px solid #edf0f4;
+    font-size:11px;
+    color:#344054;
+}
+
+tr:last-child td{
+    border-bottom:none;
+}
+
+.experiment{
+    color:#1677c8;
+    font-weight:700;
+}
+
+.best-row{
+    background:#f0faf5;
+}
+
+.badge{
+    display:inline-block;
+    padding:5px 9px;
+    border-radius:20px;
+    font-size:9px;
+    font-weight:700;
+}
+
+.best{
+    background:#e5f8ef;
+    color:#188552;
+}
+
+.good{
+    background:#eaf3ff;
+    color:#246db0;
+}
+
+.average{
+    background:#fff4df;
+    color:#bd7514;
+}
+
+/* FOOTNOTE */
+.note{
+    margin-top:18px;
+    padding:14px 16px;
+    background:#f7f9fc;
+    border-radius:10px;
+    color:#718096;
+    font-size:11px;
+    line-height:1.5;
+}
+
+/* RESPONSIVE */
+@media(max-width:1100px){
+
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:600px){
+
+    .sidebar{
+        display:none;
+    }
+
+    .main{
+        margin-left:0;
+    }
+
+    .stats{
+        grid-template-columns:1fr;
+    }
+
+    .content{
+        padding:20px;
+    }
+
+    .recommendation{
+        align-items:flex-start;
+        flex-direction:column;
+    }
+
+    .status{
+        display:none;
+    }
+}
+</style>
+
+<style id="full-marks-enhancement">
+.fm-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin:24px 0}.fm-card{background:#fff;border:1px solid #e5eaf1;border-radius:14px;padding:20px;box-shadow:0 8px 24px rgba(15,23,42,.05)}.fm-card h3{margin-bottom:8px}.fm-kpi{font-size:26px;font-weight:800;color:#123d69}.fm-muted{color:#718096;font-size:12px}.fm-pill{display:inline-block;padding:5px 9px;border-radius:999px;background:#eef6ff;color:#1769aa;font-size:11px;font-weight:700}.fm-section{margin-top:24px}.fm-section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:14px}.fm-section-head h2{font-size:20px}.fm-actions{display:flex;gap:10px;flex-wrap:wrap}.fm-btn{border:0;border-radius:9px;padding:10px 14px;background:#1769aa;color:#fff;text-decoration:none;font-weight:700;font-size:12px;cursor:pointer}.fm-btn.secondary{background:#eef3f8;color:#17324d}.fm-table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden}.fm-table th,.fm-table td{padding:11px 12px;border-bottom:1px solid #edf1f5;text-align:left;font-size:12px}.fm-table th{background:#f6f9fc;color:#536274;text-transform:uppercase;letter-spacing:.5px;font-size:10px}.fm-table tr.clickable{cursor:pointer}.fm-table tr.clickable:hover{background:#f5faff}.fm-modal{position:fixed;inset:0;background:rgba(9,20,35,.68);display:none;align-items:center;justify-content:center;padding:24px;z-index:9999}.fm-modal.show{display:flex}.fm-dialog{background:#fff;width:min(920px,96vw);max-height:90vh;overflow:auto;border-radius:18px;box-shadow:0 25px 80px rgba(0,0,0,.3)}.fm-dialog-head{padding:20px 24px;border-bottom:1px solid #e7edf4;display:flex;justify-content:space-between;align-items:center}.fm-dialog-head h2{font-size:20px;color:#123d69}.fm-close{border:0;background:#edf2f7;width:36px;height:36px;border-radius:50%;font-size:20px;cursor:pointer}.fm-dialog-body{padding:24px}.fm-two{display:grid;grid-template-columns:1fr 1.4fr;gap:22px}.fm-info{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.fm-info div{padding:12px;border:1px solid #e7edf4;border-radius:10px;background:#f9fbfd}.fm-info b{display:block;font-size:10px;text-transform:uppercase;color:#718096;margin-bottom:4px}.fm-hero{background:linear-gradient(135deg,#0f1c2c,#194b73);color:#fff;border-radius:16px;padding:24px}.fm-hero h1{font-size:26px;margin-bottom:7px}.fm-list{display:grid;gap:9px}.fm-list div{padding:10px 12px;background:#f7fafc;border-radius:9px}.fm-note{margin-top:14px;padding:14px;border-left:4px solid #1d9bf0;background:#f0f8ff;border-radius:8px;font-size:12px}.fm-query{background:#0d1725;color:#d8e7f7;padding:16px;border-radius:12px;overflow:auto;font:12px/1.55 Consolas,monospace}.fm-code{color:#9bd7ff}.fm-role{font-size:11px;color:#1769aa;font-weight:800}.fm-chartbar{height:10px;background:#e8eef5;border-radius:20px;overflow:hidden}.fm-chartbar span{display:block;height:100%;background:linear-gradient(90deg,#1769aa,#00a6c7);border-radius:20px}.fm-recommend{border:2px solid #1769aa;background:#f5fbff;border-radius:16px;padding:22px}.fm-score{font-size:34px;font-weight:900;color:#1769aa}.fm-print{float:right}.fm-tag{font-size:10px;font-weight:800;padding:4px 7px;border-radius:6px;background:#eef2f7;color:#536274}@media(max-width:1000px){.fm-grid{grid-template-columns:repeat(2,1fr)}.fm-two{grid-template-columns:1fr}}@media(max-width:650px){.fm-grid{grid-template-columns:1fr}.fm-info{grid-template-columns:1fr}.fm-dialog-body{padding:16px}}
+</style>
+
+</head>
+<body>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+<div class="logo">
+<div class="logo-icon">M</div>
+        MachOpt
+    </div>
+<div class="section-title">Main</div>
+<a class="nav-item"  href="index.html">
+<span class="icon">⌂</span>
+    Dashboard
+</a>
+<a class="nav-item"  href="experiments.html">
+<span class="icon">▣</span>
+        Experiments
+    </a>
+<a class="nav-item"  href="workpieces.html">
+<span class="icon">◈</span>
+        Workpieces
+    </a>
+<a class="nav-item"  href="cutting-tools.html">
+<span class="icon">⚙</span>
+        Cutting Tools
+    </a>
+<a class="nav-item"  href="machines.html">
+<span class="icon">▦</span>
+        Machines
+    </a>
+<a class="nav-item"  href="operators.html">
+<span class="icon">♙</span>
+        Operators
+    </a>
+<div class="section-title">Analytics</div>
+<a class="nav-item"  href="results-analysis.html">
+<span class="icon">◒</span>
+        Results Analysis
+    </a>
+<a class="nav-item"  href="energy-analysis.html">
+<span class="icon">ϟ</span>
+        Energy Analysis
+    </a>
+<a class="nav-item"  href="cost-analysis.html">
+<span class="icon">₹</span>
+        Cost Analysis
+    </a>
+<a class="nav-item active"  href="optimization.html">
+<span class="icon">✦</span>
+        Optimization
+    </a>
+</aside>
+<!-- MAIN -->
+<main class="main">
+<header class="topbar">
+<div>
+<div class="page-title">Optimization</div>
+<div class="page-subtitle">
+                Recommended machining conditions from experimental analysis
+            </div>
+</div>
+<div class="top-right">
+<div class="status">● System Online</div>
+<div class="avatar">M</div>
+</div>
+</header>
+<section class="content">
+<!-- HERO -->
+<div class="hero">
+<h1>Machining Optimization</h1>
+<p>
+                Compare machining experiments using productivity, tool wear,
+                surface quality, energy consumption and machining cost to
+                identify suitable machining conditions.
+            </p>
+</div>
+<!-- RECOMMENDATION -->
+<div class="recommendation">
+<div class="rec-left">
+<div class="rec-icon">✓</div>
+<div>
+<div class="rec-title">
+                        Recommended Condition: Experiment E15
+                    </div>
+<div class="rec-text">
+                        E15 provides the highest MRR, lowest energy consumption
+                        and lowest total machining cost among the recorded
+                        experiments.
+                    </div>
+</div>
+</div>
+<div class="rec-badge">
+                OPTIMAL
+            </div>
+</div>
+<!-- STATS -->
+<div class="stats">
+<div class="stat-card">
+<div class="stat-label">
+                    Recommended Experiment
+                </div>
+<div class="stat-value blue">
+                    E15
+                </div>
+<div class="stat-info">
+                    Best overall economic condition
+                </div>
+</div>
+<div class="stat-card">
+<div class="stat-label">
+                    Maximum Productivity
+                </div>
+<div class="stat-value orange">
+                    80 cm³/min
+                </div>
+<div class="stat-info">
+                    Material Removal Rate
+                </div>
+</div>
+<div class="stat-card">
+<div class="stat-label">
+                    Minimum Energy
+                </div>
+<div class="stat-value green">
+                    1.90 kWh
+                </div>
+<div class="stat-info">
+                    Lowest recorded consumption
+                </div>
+</div>
+<div class="stat-card">
+<div class="stat-label">
+                    Minimum Cost
+                </div>
+<div class="stat-value purple">
+                    ₹109
+                </div>
+<div class="stat-info">
+                    Lowest total machining cost
+                </div>
+</div>
+</div>
+<!-- PARAMETERS + SCORE -->
+<div class="grid">
+<div class="panel">
+<div class="panel-header">
+<div class="panel-title">
+                        Recommended Machining Parameters
+                    </div>
+<div class="panel-desc">
+                        Parameters used in Experiment E15
+                    </div>
+</div>
+<div class="parameter">
+<div class="parameter-top">
+<span class="parameter-name">
+                            Spindle Speed
+                        </span>
+<span class="parameter-value">
+                            250 RPM
+                        </span>
+</div>
+<div class="parameter-bar">
+<div class="parameter-fill speed"></div>
+</div>
+</div>
+<div class="parameter">
+<div class="parameter-top">
+<span class="parameter-name">
+                            Feed Rate
+                        </span>
+<span class="parameter-value">
+                            150 mm/min
+                        </span>
+</div>
+<div class="parameter-bar">
+<div class="parameter-fill feed"></div>
+</div>
+</div>
+<div class="parameter">
+<div class="parameter-top">
+<span class="parameter-name">
+                            Depth of Cut
+                        </span>
+<span class="parameter-value">
+                            1.25 mm
+                        </span>
+</div>
+<div class="parameter-bar">
+<div class="parameter-fill depth"></div>
+</div>
+</div>
+<div class="parameter">
+<div class="parameter-top">
+<span class="parameter-name">
+                            Overall Quality
+                        </span>
+<span class="parameter-value">
+                            Excellent
+                        </span>
+</div>
+<div class="parameter-bar">
+<div class="parameter-fill quality"></div>
+</div>
+</div>
+</div>
+<div class="panel">
+<div class="panel-header">
+<div class="panel-title">
+                        Optimization Score
+                    </div>
+<div class="panel-desc">
+                        Multi-objective performance assessment
+                    </div>
+</div>
+<div class="score-box">
+<div class="score-circle">
+<div class="score-number">
+                            92%
+                        </div>
+</div>
+<div class="score-text">
+<h3>Highly Suitable</h3>
+<p>
+                            The selected condition provides a strong balance
+                            between productivity, energy efficiency and cost.
+                        </p>
+</div>
+</div>
+<div class="check">
+<div class="check-icon">✓</div>
+<span>
+                        High material removal rate
+                    </span>
+</div>
+<div class="check">
+<div class="check-icon">✓</div>
+<span>
+                        Low tool wear
+                    </span>
+</div>
+<div class="check">
+<div class="check-icon">✓</div>
+<span>
+                        Low energy consumption
+                    </span>
+</div>
+<div class="check">
+<div class="check-icon">✓</div>
+<span>
+                        Lowest machining cost
+                    </span>
+</div>
+</div>
+</div>
+<!-- COMPARISON TABLE -->
+<div class="table-panel">
+<div class="panel-header">
+<div class="panel-title">
+                    Optimization Comparison
+                </div>
+<div class="panel-desc">
+                    Comparison of important machining conditions
+                </div>
+</div>
+<table>
+<thead>
+<tr>
+<th>Experiment</th>
+<th>Tool Wear</th>
+<th>Surface Roughness</th>
+<th>MRR</th>
+<th>Energy</th>
+<th>Total Cost</th>
+<th>Assessment</th>
+</tr>
+</thead>
+<tbody>
+<tr class="best-row">
+<td class="experiment">E15</td>
+<td>0.100 mm</td>
+<td>2.20 µm</td>
+<td>80 cm³/min</td>
+<td>1.90 kWh</td>
+<td>₹109.00</td>
+<td>
+<span class="badge best">
+                                OPTIMAL
+                            </span>
+</td>
+</tr>
+<tr>
+<td class="experiment">E03</td>
+<td>0.095 mm</td>
+<td>2.10 µm</td>
+<td>65 cm³/min</td>
+<td>2.05 kWh</td>
+<td>₹130.50</td>
+<td>
+<span class="badge best">
+                                QUALITY
+                            </span>
+</td>
+</tr>
+<tr>
+<td class="experiment">E04</td>
+<td>0.110 mm</td>
+<td>2.30 µm</td>
+<td>78 cm³/min</td>
+<td>2.00 kWh</td>
+<td>₹110.00</td>
+<td>
+<span class="badge good">
+                                EXCELLENT
+                            </span>
+</td>
+</tr>
+<tr>
+<td class="experiment">E12</td>
+<td>0.145 mm</td>
+<td>2.50 µm</td>
+<td>68 cm³/min</td>
+<td>3.30 kWh</td>
+<td>₹183.00</td>
+<td>
+<span class="badge good">
+                                GOOD
+                            </span>
+</td>
+</tr>
+<tr>
+<td class="experiment">E18</td>
+<td>0.180 mm</td>
+<td>3.10 µm</td>
+<td>50 cm³/min</td>
+<td>3.80 kWh</td>
+<td>₹258.00</td>
+<td>
+<span class="badge average">
+                                MODERATE
+                            </span>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="note">
+<strong>Optimization insight:</strong>
+                E03 provides the best surface finish and lowest tool wear,
+                while E15 provides the highest productivity together with
+                the lowest energy consumption and machining cost. Therefore,
+                the preferred experiment depends on whether quality or
+                productivity/economic efficiency is prioritized.
+
+            </div>
+</div>
+</section>
+
+<section class="fm-section">
+<div class="fm-section-head"><div><h2>MachOpt Decision Engine</h2><p class="fm-muted">Select an engineering objective to generate a data-backed recommendation from the 18 experiments.</p></div></div>
+<div class="fm-card"><label style="font-size:12px;font-weight:700;display:block;margin-bottom:7px">Optimization objective</label><select id="fmObjective" style="width:100%;padding:12px;border:1px solid #d8e0ea;border-radius:9px;font-size:13px"><option value="quality">Best quality — minimum tool wear + surface roughness</option><option value="productivity">Maximum productivity — highest MRR</option><option value="energy">Minimum energy consumption</option><option value="cost">Minimum total cost</option><option value="balanced">Balanced recommendation</option></select></div>
+<div id="fmRecommendation" class="fm-recommend" style="margin-top:16px"></div>
+</section>
+<script>
+const fmData={
+E03:{workpiece:'Aluminium 6061',tool:'Carbide',machine:'M02',operator:'Mohitha',wear:0.095,ra:2.10,mrr:65,energy:2.05,cost:130.50,speed:220,feed:120,doc:1.00,time:11},
+E15:{workpiece:'Brass',tool:'Coated Carbide',machine:'M02',operator:'Rakesh',wear:0.100,ra:2.20,mrr:80,energy:1.90,cost:109.00,speed:250,feed:150,doc:1.25,time:9},
+E04:{workpiece:'Aluminium 6061',tool:'Coated Carbide',machine:'M02',operator:'Mohitha',wear:0.110,ra:2.30,mrr:78,energy:2.00,cost:110.00,speed:250,feed:140,doc:1.25,time:9}};
+function renderRec(){const o=document.getElementById('fmObjective').value;let id=o==='quality'?'E03':o==='productivity'?'E15':o==='energy'?'E15':o==='cost'?'E15':'E04';const d=fmData[id];const reason=o==='quality'?'Best combination of very low tool wear and surface finish.':o==='productivity'?'Highest recorded MRR in the experiment set.':o==='energy'?'Lowest recorded energy consumption.':o==='cost'?'Lowest recorded total machining cost.':'Strong balance of productivity, energy, cost and quality.';document.getElementById('fmRecommendation').innerHTML=`<div style="display:flex;justify-content:space-between;gap:15px;flex-wrap:wrap"><div><span class="fm-pill">RECOMMENDED</span><h2 style="margin:8px 0">${id} — ${d.tool}</h2><p class="fm-muted">${d.workpiece} • ${d.machine} • Operator ${d.operator}</p></div><div class="fm-score">${d.mrr}<small style="font-size:13px"> cm³/min</small></div></div><div class="fm-note"><b>Engineering reason:</b> ${reason}</div><div class="fm-info" style="margin-top:16px"><div><b>Tool Wear</b>${d.wear} mm</div><div><b>Surface Roughness</b>${d.ra} µm</div><div><b>MRR</b>${d.mrr} cm³/min</div><div><b>Energy</b>${d.energy} kWh</div><div><b>Total Cost</b>₹${d.cost.toFixed(2)}</div><div><b>Parameters</b>${d.speed} / ${d.feed} / ${d.doc} / ${d.time}</div></div>`}document.getElementById('fmObjective').addEventListener('change',renderRec);renderRec();
+</script>
+
+</main>
+</body>
+</html>
