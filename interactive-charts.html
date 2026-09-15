@@ -7,27 +7,4 @@
 <script>
 let rows=[],cs=[];async function init(){try{let j=await(await fetch("/api/experiments")).json();rows=j.data||[];for(let x of [...new Set(rows.map(x=>x.Workpiece_ID))])wp.add(new Option(x,x));for(let x of [...new Set(rows.map(x=>x.Tool_ID))])tool.add(new Option(x,x));draw()}catch(e){status.textContent="API error. Keep node server.js running."}}
 function draw(){cs.forEach(x=>x.destroy());let a=rows.filter(x=>(!wp.value||x.Workpiece_ID==wp.value)&&(!tool.value||x.Tool_ID==tool.value));status.textContent=`Showing ${a.length} experiment(s)`;let mk=(id,type,labels,data,label)=>cs.push(new Chart(document.getElementById(id),{type,data:{labels,datasets:[{label,data,borderWidth:2,tension:.25}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:true}}}}));mk("c1","line",a.map(x=>x.Experiment_ID),a.map(x=>+x.Tool_Wear_mm),"Tool wear (mm)");cs.push(new Chart(c2,{type:"scatter",data:{datasets:[{label:"MRR vs Feed Rate",data:a.map(x=>({x:+x.Feed_Rate_mm_min,y:+x.Material_Removal_Rate_cm3_min})),borderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,scales:{x:{title:{display:true,text:"Feed rate (mm/min)"}},y:{title:{display:true,text:"MRR (cm³/min)"}}}}}));mk("c3","bar",a.map(x=>x.Experiment_ID),a.map(x=>+x.Energy_Consumed_kWh),"Energy (kWh)");mk("c4","bar",a.map(x=>x.Experiment_ID),a.map(x=>+x.Total_Cost),"Cost (₹)")}init();
-</script><script>
-if (!localStorage.getItem('machoptUser')) {
-    window.location.href = 'login.html';
-}
-</script><div style="position:fixed; top:18px; right:25px; z-index:9999;">
-    <button onclick="logoutUser()" style="
-        padding:10px 18px;
-        border:none;
-        border-radius:8px;
-        background:#dc2626;
-        color:white;
-        font-weight:600;
-        cursor:pointer;
-    ">
-        Logout
-    </button>
-</div>
-
-<script>
-function logoutUser() {
-    localStorage.removeItem('machoptUser');
-    window.location.href = 'login.html';
-}
 </script></body></html>

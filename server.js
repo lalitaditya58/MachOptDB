@@ -53,10 +53,10 @@ app.get("/api/experiments", (req, res) => {
     const sql = `
         SELECT
             e.Experiment_ID,
-            e.Workpiece_ID,
+            e.workpiece_ID,
             e.Tool_ID,
-            e.Machine_ID,
-            e.Operator_ID,
+            e.machine_ID,
+            e.operator_ID,
             e.Spindle_Speed,
             e.Feed_Rate,
             e.Depth_of_Cut,
@@ -66,12 +66,12 @@ app.get("/api/experiments", (req, res) => {
             r.Material_Removal_Rate,
             en.Energy_Consumed_kWh,
             c.Total_Cost
-        FROM Machining_Experiment e
-        JOIN Machining_Result r
+        FROM machining_experiment e
+        JOIN machining_result r
             ON e.Experiment_ID = r.Experiment_ID
-        JOIN Energy_Consumption en
+        JOIN energy_consumption en
             ON e.Experiment_ID = en.Experiment_ID
-        JOIN Machining_Cost c
+        JOIN machining_cost c
             ON e.Experiment_ID = c.Experiment_ID
         ORDER BY e.Experiment_ID;
     `;
@@ -116,15 +116,15 @@ app.get("/api/dashboard", (req, res) => {
 
             ROUND(AVG(c.Total_Cost), 2) AS avg_cost
 
-        FROM Machining_Experiment e
+        FROM machining_experiment e
 
-        JOIN Machining_Result r
+        JOIN machining_result r
             ON e.Experiment_ID = r.Experiment_ID
 
-        JOIN Energy_Consumption en
+        JOIN energy_consumption en
             ON e.Experiment_ID = en.Experiment_ID
 
-        JOIN Machining_Cost c
+        JOIN machining_cost c
             ON e.Experiment_ID = c.Experiment_ID;
     `;
 
@@ -156,16 +156,16 @@ app.get("/api/results", (req, res) => {
     const sql = `
         SELECT
             r.*,
-            e.Workpiece_ID,
+            e.workpiece_ID,
             e.Tool_ID,
-            e.Machine_ID,
-            e.Operator_ID,
+            e.machine_ID,
+            e.operator_ID,
             e.Spindle_Speed,
             e.Feed_Rate,
             e.Depth_of_Cut,
             e.Machining_Time
-        FROM Machining_Result r
-        JOIN Machining_Experiment e
+        FROM machining_result r
+        JOIN machining_experiment e
             ON r.Experiment_ID = e.Experiment_ID
         ORDER BY r.Experiment_ID;
     `;
@@ -199,15 +199,15 @@ app.get("/api/energy", (req, res) => {
     const sql = `
         SELECT
             en.*,
-            e.Workpiece_ID,
+            e.workpiece_ID,
             e.Tool_ID,
-            e.Machine_ID,
+            e.machine_ID,
             e.Spindle_Speed,
             e.Feed_Rate,
             e.Depth_of_Cut,
             e.Machining_Time
-        FROM Energy_Consumption en
-        JOIN Machining_Experiment e
+        FROM energy_consumption en
+        JOIN machining_experiment e
             ON en.Experiment_ID = e.Experiment_ID
         ORDER BY en.Experiment_ID;
     `;
@@ -241,13 +241,13 @@ app.get("/api/cost", (req, res) => {
     const sql = `
         SELECT
             c.*,
-            e.Workpiece_ID,
+            e.workpiece_ID,
             e.Tool_ID,
-            e.Machine_ID,
-            e.Operator_ID,
+            e.machine_ID,
+            e.operator_ID,
             e.Machining_Time
-        FROM Machining_Cost c
-        JOIN Machining_Experiment e
+        FROM machining_cost c
+        JOIN machining_experiment e
             ON c.Experiment_ID = e.Experiment_ID
         ORDER BY c.Experiment_ID;
     `;
@@ -273,13 +273,13 @@ app.get("/api/cost", (req, res) => {
 
 
 // =====================================================
-// WORKPIECES
+// workpieceS
 // =====================================================
 
 app.get("/api/workpieces", (req, res) => {
 
     db.query(
-        "SELECT * FROM Workpiece ORDER BY Workpiece_ID",
+        "SELECT * FROM workpiece ORDER BY workpiece_ID",
         (err, results) => {
 
             if (err) {
@@ -306,7 +306,7 @@ app.get("/api/workpieces", (req, res) => {
 app.get("/api/tools", (req, res) => {
 
     db.query(
-        "SELECT * FROM Cutting_Tool ORDER BY Tool_ID",
+        "SELECT * FROM cutting_tool ORDER BY Tool_ID",
         (err, results) => {
 
             if (err) {
@@ -327,13 +327,13 @@ app.get("/api/tools", (req, res) => {
 
 
 // =====================================================
-// MACHINES
+// machineS
 // =====================================================
 
 app.get("/api/machines", (req, res) => {
 
     db.query(
-        "SELECT * FROM Machine ORDER BY Machine_ID",
+        "SELECT * FROM machine ORDER BY machine_ID",
         (err, results) => {
 
             if (err) {
@@ -354,13 +354,13 @@ app.get("/api/machines", (req, res) => {
 
 
 // =====================================================
-// OPERATORS
+// operatorS
 // =====================================================
 
 app.get("/api/operators", (req, res) => {
 
     db.query(
-        "SELECT * FROM Operator ORDER BY Operator_ID",
+        "SELECT * FROM operator ORDER BY operator_ID",
         (err, results) => {
 
             if (err) {
@@ -394,10 +394,10 @@ app.get("/api/tool-performance", (req, res) => {
             ROUND(AVG(r.Surface_Roughness_Ra), 2) AS Average_Roughness,
             ROUND(AVG(r.Material_Removal_Rate), 2) AS Average_MRR,
             COUNT(e.Experiment_ID) AS Experiments
-        FROM Cutting_Tool t
-        JOIN Machining_Experiment e
+        FROM cutting_tool t
+        JOIN machining_experiment e
             ON t.Tool_ID = e.Tool_ID
-        JOIN Machining_Result r
+        JOIN machining_result r
             ON e.Experiment_ID = r.Experiment_ID
         GROUP BY
             t.Tool_ID,
@@ -423,29 +423,29 @@ app.get("/api/tool-performance", (req, res) => {
 
 
 // =====================================================
-// MACHINE PERFORMANCE
+// machine PERFORMANCE
 // =====================================================
 
 app.get("/api/machine-performance", (req, res) => {
 
     const sql = `
         SELECT
-            m.Machine_ID,
-            m.Machine_Name,
+            m.machine_ID,
+            m.machine_Name,
             COUNT(e.Experiment_ID) AS Experiments,
             ROUND(AVG(r.Material_Removal_Rate), 2) AS Average_MRR,
             ROUND(AVG(r.Tool_Wear_mm), 3) AS Average_Tool_Wear,
             ROUND(AVG(en.Energy_Consumed_kWh), 2) AS Average_Energy
-        FROM Machine m
-        JOIN Machining_Experiment e
-            ON m.Machine_ID = e.Machine_ID
-        JOIN Machining_Result r
+        FROM machine m
+        JOIN machining_experiment e
+            ON m.machine_ID = e.machine_ID
+        JOIN machining_result r
             ON e.Experiment_ID = r.Experiment_ID
-        JOIN Energy_Consumption en
+        JOIN energy_consumption en
             ON e.Experiment_ID = en.Experiment_ID
         GROUP BY
-            m.Machine_ID,
-            m.Machine_Name
+            m.machine_ID,
+            m.machine_Name
         ORDER BY Average_MRR DESC;
     `;
 
@@ -478,8 +478,8 @@ app.get("/api/best-quality", (req, res) => {
             r.Tool_Wear_mm,
             r.Surface_Roughness_Ra,
             r.Material_Removal_Rate
-        FROM Machining_Experiment e
-        JOIN Machining_Result r
+        FROM machining_experiment e
+        JOIN machining_result r
             ON e.Experiment_ID = r.Experiment_ID
         ORDER BY
             r.Tool_Wear_mm ASC,
@@ -516,12 +516,12 @@ app.get("/api/best-productivity", (req, res) => {
             r.Material_Removal_Rate,
             en.Energy_Consumed_kWh,
             c.Total_Cost
-        FROM Machining_Experiment e
-        JOIN Machining_Result r
+        FROM machining_experiment e
+        JOIN machining_result r
             ON e.Experiment_ID = r.Experiment_ID
-        JOIN Energy_Consumption en
+        JOIN energy_consumption en
             ON e.Experiment_ID = en.Experiment_ID
-        JOIN Machining_Cost c
+        JOIN machining_cost c
             ON e.Experiment_ID = c.Experiment_ID
         ORDER BY r.Material_Removal_Rate DESC
         LIMIT 1;
@@ -556,12 +556,12 @@ app.get("/api/lowest-cost", (req, res) => {
             c.Total_Cost,
             r.Material_Removal_Rate,
             en.Energy_Consumed_kWh
-        FROM Machining_Experiment e
-        JOIN Machining_Result r
+        FROM machining_experiment e
+        JOIN machining_result r
             ON e.Experiment_ID = r.Experiment_ID
-        JOIN Energy_Consumption en
+        JOIN energy_consumption en
             ON e.Experiment_ID = en.Experiment_ID
-        JOIN Machining_Cost c
+        JOIN machining_cost c
             ON e.Experiment_ID = c.Experiment_ID
         ORDER BY c.Total_Cost ASC
         LIMIT 1;
@@ -596,12 +596,12 @@ app.get("/api/lowest-energy", (req, res) => {
             en.Energy_Consumed_kWh,
             r.Material_Removal_Rate,
             c.Total_Cost
-        FROM Machining_Experiment e
-        JOIN Machining_Result r
+        FROM machining_experiment e
+        JOIN machining_result r
             ON e.Experiment_ID = r.Experiment_ID
-        JOIN Energy_Consumption en
+        JOIN energy_consumption en
             ON e.Experiment_ID = en.Experiment_ID
-        JOIN Machining_Cost c
+        JOIN machining_cost c
             ON e.Experiment_ID = c.Experiment_ID
         ORDER BY en.Energy_Consumed_kWh ASC
         LIMIT 1;
@@ -638,9 +638,9 @@ app.get("/api/analysis", (req, res) => {
 
             t.Tool_Material,
 
-            m.Machine_Name,
+            m.machine_Name,
 
-            o.Operator_Name,
+            o.operator_Name,
 
             e.Spindle_Speed,
             e.Feed_Rate,
@@ -657,27 +657,27 @@ app.get("/api/analysis", (req, res) => {
             c.Energy_Cost,
             c.Total_Cost
 
-        FROM Machining_Experiment e
+        FROM machining_experiment e
 
-        JOIN Workpiece w
-            ON e.Workpiece_ID = w.Workpiece_ID
+        JOIN workpiece w
+            ON e.workpiece_ID = w.workpiece_ID
 
-        JOIN Cutting_Tool t
+        JOIN cutting_tool t
             ON e.Tool_ID = t.Tool_ID
 
-        JOIN Machine m
-            ON e.Machine_ID = m.Machine_ID
+        JOIN machine m
+            ON e.machine_ID = m.machine_ID
 
-        JOIN Operator o
-            ON e.Operator_ID = o.Operator_ID
+        JOIN operator o
+            ON e.operator_ID = o.operator_ID
 
-        JOIN Machining_Result r
+        JOIN machining_result r
             ON e.Experiment_ID = r.Experiment_ID
 
-        JOIN Energy_Consumption en
+        JOIN energy_consumption en
             ON e.Experiment_ID = en.Experiment_ID
 
-        JOIN Machining_Cost c
+        JOIN machining_cost c
             ON e.Experiment_ID = c.Experiment_ID
 
         ORDER BY e.Experiment_ID;
@@ -709,10 +709,10 @@ app.post("/api/experiments", (req, res) => {
 
     const {
         Experiment_ID,
-        Workpiece_ID,
+        workpiece_ID,
         Tool_ID,
-        Machine_ID,
-        Operator_ID,
+        machine_ID,
+        operator_ID,
         Spindle_Speed,
         Feed_Rate,
         Depth_of_Cut,
@@ -720,13 +720,13 @@ app.post("/api/experiments", (req, res) => {
     } = req.body;
 
     const sql = `
-        INSERT INTO Machining_Experiment
+        INSERT INTO machining_experiment
         (
             Experiment_ID,
-            Workpiece_ID,
+            workpiece_ID,
             Tool_ID,
-            Machine_ID,
-            Operator_ID,
+            machine_ID,
+            operator_ID,
             Spindle_Speed,
             Feed_Rate,
             Depth_of_Cut,
@@ -737,10 +737,10 @@ app.post("/api/experiments", (req, res) => {
 
     const values = [
         Experiment_ID,
-        Workpiece_ID,
+        workpiece_ID,
         Tool_ID,
-        Machine_ID,
-        Operator_ID,
+        machine_ID,
+        operator_ID,
         Spindle_Speed,
         Feed_Rate,
         Depth_of_Cut,
@@ -776,10 +776,10 @@ app.put("/api/experiments/:id", (req, res) => {
     const id = req.params.id;
 
     const {
-        Workpiece_ID,
+        workpiece_ID,
         Tool_ID,
-        Machine_ID,
-        Operator_ID,
+        machine_ID,
+        operator_ID,
         Spindle_Speed,
         Feed_Rate,
         Depth_of_Cut,
@@ -787,12 +787,12 @@ app.put("/api/experiments/:id", (req, res) => {
     } = req.body;
 
     const sql = `
-        UPDATE Machining_Experiment
+        UPDATE machining_experiment
         SET
-            Workpiece_ID = ?,
+            workpiece_ID = ?,
             Tool_ID = ?,
-            Machine_ID = ?,
-            Operator_ID = ?,
+            machine_ID = ?,
+            operator_ID = ?,
             Spindle_Speed = ?,
             Feed_Rate = ?,
             Depth_of_Cut = ?,
@@ -801,10 +801,10 @@ app.put("/api/experiments/:id", (req, res) => {
     `;
 
     const values = [
-        Workpiece_ID,
+        workpiece_ID,
         Tool_ID,
-        Machine_ID,
-        Operator_ID,
+        machine_ID,
+        operator_ID,
         Spindle_Speed,
         Feed_Rate,
         Depth_of_Cut,
@@ -841,7 +841,7 @@ app.delete("/api/experiments/:id", (req, res) => {
     const id = req.params.id;
 
     db.query(
-        "DELETE FROM Machining_Experiment WHERE Experiment_ID = ?",
+        "DELETE FROM machining_experiment WHERE Experiment_ID = ?",
         [id],
         (err, result) => {
 
@@ -878,7 +878,7 @@ app.get("/api/optimization", (req, res) => {
 
             t.Tool_Material,
 
-            m.Machine_Name,
+            m.machine_Name,
 
             e.Spindle_Speed,
             e.Feed_Rate,
@@ -893,24 +893,24 @@ app.get("/api/optimization", (req, res) => {
 
             c.Total_Cost
 
-        FROM Machining_Experiment e
+        FROM machining_experiment e
 
-        JOIN Workpiece w
-            ON e.Workpiece_ID = w.Workpiece_ID
+        JOIN workpiece w
+            ON e.workpiece_ID = w.workpiece_ID
 
-        JOIN Cutting_Tool t
+        JOIN cutting_tool t
             ON e.Tool_ID = t.Tool_ID
 
-        JOIN Machine m
-            ON e.Machine_ID = m.Machine_ID
+        JOIN machine m
+            ON e.machine_ID = m.machine_ID
 
-        JOIN Machining_Result r
+        JOIN machining_result r
             ON e.Experiment_ID = r.Experiment_ID
 
-        JOIN Energy_Consumption en
+        JOIN energy_consumption en
             ON e.Experiment_ID = en.Experiment_ID
 
-        JOIN Machining_Cost c
+        JOIN machining_cost c
             ON e.Experiment_ID = c.Experiment_ID
 
         ORDER BY
