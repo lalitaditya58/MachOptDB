@@ -805,5 +805,10 @@ async function loadDashboardFromDatabase() {
 
 loadDashboardFromDatabase();
 </script>
+<script>
+if (!localStorage.getItem('machoptUser')) {
+    window.location.href = 'login.html';
+}
+</script>
 </body>
 </html>
